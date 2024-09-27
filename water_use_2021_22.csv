@@ -1,10 +1,9 @@
-Regi﻿on,Region Code (ASGS),Total Water Use by Industry (ML),Total Water Use by Agriculture (ML),Total Water Use by Households (ML),Total Water Use (ML),Total Water Consumption (ML)
-New South Wales,1,"21,647,435","3,901,033","528,382","22,175,817","4,851,227"
-Victoria,2,"10,919,967","2,169,340","419,868","11,339,836","2,842,891"
-Queensland,3,"7,042,818","2,360,818","346,506","7,389,324","3,066,458"
-South Australia,4,"1,536,272","701,411","141,125","1,677,397","869,321"
-Western Australia,5,"3,415,945","452,526","251,455","3,667,400","1,301,956"
-Tasmania,6,"34,219,424","337,803","34,578","34,254,002","393,685"
-Northern Territory,7,"212,609","57,371","26,567","239,176","120,503"
-Australian Capital Territory,8,"102,962",320,"30,390","133,352","3,289"
-Australia (Total),0,"79,097,432","9,980,622","1,778,872","80,876,304","13,449,330"
+Region,Region Code (ASGS),Total Water Use by Industry (ML),Total Water Use by Agriculture (ML),Total Water Use by Households (ML),Total Water Use (ML),Total Water Consumption (ML)
+New South Wales,1,21647435,3901033,528382,22175817,4851227
+Victoria,2,10919967,2169340,419868,11339836,2842891
+Queensland,3,7042818,2360818,346506,7389324,3066458
+South Australia,4,1536272,701411,141125,1677397,869321
+Western Australia,5,3415945,452526,251455,3667400,1301956
+Tasmania,6,34219424,337803,34578,34254002,393685
+Northern Territory,7,212609,57371,26567,239176,120503
+Australian Capital Territory,8,102962,320,30390,133352,3289
