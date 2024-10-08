@@ -1,0 +1,88 @@
+{
+    "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+    "description": "Normalized Line Chart with Filters",
+    "width": 800,
+    "height": 450,
+    "data": {
+      "url": "https://raw.githubusercontent.com/Lhart0050/population-density-map/main/reshaped_data.csv",
+      "format": {"type": "csv"}
+    },
+    "transform": [
+      {
+        "calculate": "toNumber(datum.Value)",
+        "as": "Value"
+      },
+      {
+        "filter": "datum.Indicator == IndicatorSelect"
+      },
+      {
+        "filter": "indexof(RegionSelect, datum.Region) >= 0"
+      }
+    ],
+    "params": [
+      {
+        "name": "IndicatorSelect",
+        "value": "Area-average rainfall (a)",
+        "bind": {
+          "input": "select",
+          "options": [
+            "Area-average rainfall (a)",
+            "Accessible volume in major dam storages as of June 30 (b)"
+          ],
+          "name": "Select Indicator: "
+        }
+      },
+      {
+        "name": "RegionSelect",
+        "value": [
+          "New South Wales",
+          "Victoria",
+          "Queensland",
+          "South Australia",
+          "Western Australia",
+          "Tasmania",
+          "Northern Territory",
+          "Australian Capital Territory"
+        ],
+        "bind": {
+          "input": "select",
+          "options": [
+            "New South Wales",
+            "Victoria",
+            "Queensland",
+            "South Australia",
+            "Western Australia",
+            "Tasmania",
+            "Northern Territory",
+            "Australian Capital Territory"
+          ],
+          "name": "Select Region: ",
+          "multiple": true
+        }
+      }
+    ],
+    "layer": [
+      {
+        "mark": "line",
+        "encoding": {
+          "x": {"field": "Year", "type": "ordinal", "title": "Year"},
+          "y": {"field": "Value", "type": "quantitative", "title": "Value"},
+          "color": {"field": "Region", "type": "nominal", "title": "Region"}
+        }
+      },
+      {
+        "mark": "point",
+        "encoding": {
+          "x": {"field": "Year", "type": "ordinal"},
+          "y": {"field": "Value", "type": "quantitative"},
+          "tooltip": [
+            {"field": "Region", "type": "nominal"},
+            {"field": "Indicator", "type": "nominal"},
+            {"field": "Year", "type": "ordinal"},
+            {"field": "Value", "type": "quantitative", "title": "Value"}
+          ]
+        }
+      }
+    ]
+  }
+  
