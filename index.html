@@ -182,16 +182,10 @@
     <div id="story" class="section">
       <h2>Understanding Australia's Water Resources</h2>
       <p>
-        The Water Account, Australia provides a comprehensive overview of the nation's water resources,
-        focusing on the physical and monetary aspects of water supply and usage within the Australian economy.
-        The latest release highlights significant trends in water consumption, industry usage, and the
-        economic value attributed to water resources across different regions and sectors.
+        The Water Account, Australia presents comprehensive information on the physical and monetary supply and use of water within the Australian economy. The latest release provides insights into water consumption patterns, industry usage, and the economic significance of water resources across different regions and sectors.
       </p>
       <p>
-        Water is a vital resource for Australia's environmental sustainability and economic prosperity.
-        Understanding how water is sourced, distributed, and consumed helps in making informed decisions
-        for water management, policy development, and addressing challenges such as climate variability
-        and increasing demand from various sectors.
+        Water is a crucial resource for Australia's environmental sustainability and economic development. By understanding how water is sourced, distributed, and consumed, policymakers and stakeholders can make informed decisions to manage water resources effectively, address challenges like climate variability, and meet the growing demands of various industries.
       </p>
     </div>
 
@@ -207,7 +201,7 @@
 
       <!-- Line Chart Visualization -->
       <div class="vis-container">
-        <div id="dynamic-title">Water Indicators Over Time</div>
+        <div id="dynamic-title">Water Sources by All States Yearly</div>
         <div id="line-chart" class="vis"></div>
       </div>
     </div>
@@ -216,8 +210,7 @@
     <div id="data-download" class="section">
       <h2>Data Download</h2>
       <p>
-        The datasets used in this dashboard are available for download. They provide detailed information
-        on water use, consumption, and indicators across different regions and industries in Australia.
+        The datasets used in this dashboard are available for download. They provide detailed information on water use, consumption, and indicators across different regions and industries in Australia.
       </p>
       <a href="https://example.com/data-download" class="download-button">Download Data</a>
     </div>
@@ -359,7 +352,7 @@
         },
         {
           "name": "RegionSelect",
-          "value": ["New South Wales"],
+          "value": ["All States"],
           "bind": {
             "input": "select",
             "options": [
@@ -489,12 +482,12 @@
       const titleElement = document.getElementById('dynamic-title');
       let regionsText = 'All States';
 
-      if (regions.length > 1 || (regions.length === 1 && regions[0] !== 'All States')) {
+      if (regions.length > 0 && !(regions.length === 1 && regions[0] === 'All States')) {
         regionsText = regions.join(', ');
       }
 
       const formattedIndicator = indicator.trim();
-      titleElement.textContent = `${formattedIndicator} in ${regionsText} Over Time`;
+      titleElement.textContent = `Water Sources by ${formattedIndicator} in ${regionsText} Yearly`;
     }
 
     // Embed the Line Chart and set up signal listeners
