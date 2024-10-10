@@ -2,11 +2,12 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Australian Water Use Visualization</title>
+  <title>Water Account Australia Dashboard</title>
   <!-- Vega Libraries -->
   <script src="https://cdn.jsdelivr.net/npm/vega@5"></script>
   <script src="https://cdn.jsdelivr.net/npm/vega-lite@5"></script>
   <script src="https://cdn.jsdelivr.net/npm/vega-embed@6"></script>
+  <!-- Styling -->
   <style>
     /* Reset default margins and paddings */
     * {
@@ -19,52 +20,105 @@
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       background-color: #f0f4f8;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: flex-start;
-      min-height: 100vh;
-      padding: 20px;
+      color: #333;
     }
 
     /* Header Styling */
-    h2 {
+    .header {
+      background-color: #00796b;
+      color: #fff;
+      padding: 20px;
       text-align: center;
-      color: #333;
-      margin-bottom: 20px;
+    }
+
+    .header h1 {
+      font-size: 36px;
+      margin-bottom: 10px;
+    }
+
+    .header p {
+      font-size: 18px;
+    }
+
+    /* Navigation Bar */
+    .navbar {
+      display: flex;
+      justify-content: center;
+      background-color: #004d40;
+    }
+
+    .navbar a {
+      color: #fff;
+      padding: 14px 20px;
+      text-decoration: none;
+      font-size: 16px;
+    }
+
+    .navbar a:hover {
+      background-color: #00332e;
+    }
+
+    /* Main Content Styling */
+    .container {
+      max-width: 1200px;
+      margin: 40px auto;
+      padding: 0 20px;
+    }
+
+    /* Section Styling */
+    .section {
+      margin-bottom: 60px;
+    }
+
+    .section h2 {
       font-size: 28px;
+      margin-bottom: 20px;
+      border-bottom: 2px solid #ccc;
+      padding-bottom: 10px;
     }
 
-    /* Dynamic Title Styling */
-    #dynamic-title {
-      width: 100%;
-      max-width: 1000px;
-      background-color: #e0e0e0; /* Greyish background */
-      border-radius: 8px;
-      padding: 15px 20px;
-      margin: 20px 0; /* Space between title and charts */
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-      font-size: 20px;
-      color: #333;
-      text-align: center;
+    .section p {
+      font-size: 16px;
+      line-height: 1.6;
     }
 
-    /* Container Styling */
-    .card {
-      width: 100%;
-      max-width: 1000px;           
+    /* Visualization Styling */
+    .vis-container {
       background-color: #ffffff;
       border-radius: 12px;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
       padding: 20px;
-      margin-bottom: 30px; /* Space between cards */
+      margin-top: 30px;
     }
 
-    /* Visualization Styling */
     .vis {
-      width: 100%;             
-      height: 450px;            
-      margin: 0 auto; /* Center the visualization */
+      width: 100%;
+      height: 500px;
+    }
+
+    /* Button Styling */
+    .download-button {
+      display: inline-block;
+      background-color: #00796b;
+      color: #fff;
+      padding: 12px 24px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-size: 16px;
+      margin-top: 20px;
+    }
+
+    .download-button:hover {
+      background-color: #00594d;
+    }
+
+    /* Footer Styling */
+    .footer {
+      background-color: #004d40;
+      color: #fff;
+      text-align: center;
+      padding: 20px;
+      margin-top: 40px;
     }
 
     /* Tooltip Styling */
@@ -99,27 +153,71 @@
   </style>
 </head>
 <body>
-  <h2>Australian Water Use Visualizations (2021-22)</h2>
-  
-  <!-- Map Container -->
-  <div class="card">
-    <div id="map" class="vis"></div>
+
+  <!-- Header Section -->
+  <div class="header">
+    <h1>Water Account Australia Dashboard</h1>
+    <p>Exploring the Physical and Monetary Supply and Use of Water in the Australian Economy</p>
   </div>
 
-  <!-- Line Chart Container -->
-  <div class="card">
-    <div id="dynamic-title">
-      Water Sources by All States Yearly
+  <!-- Navigation Bar -->
+  <div class="navbar">
+    <a href="#story">Story</a>
+    <a href="#visualizations">Visualizations</a>
+  </div>
+
+  <!-- Main Container -->
+  <div class="container">
+
+    <!-- Story Section -->
+    <div id="story" class="section">
+      <h2>Understanding Australia's Water Resources</h2>
+      <p>
+        The Water Account, Australia provides a comprehensive overview of the nation's water resources,
+        focusing on the physical and monetary aspects of water supply and usage within the Australian economy.
+        The latest release highlights significant trends in water consumption, industry usage, and the
+        economic value attributed to water resources across different regions and sectors.
+      </p>
+      <p>
+        Water is a vital resource for Australia's environmental sustainability and economic prosperity.
+        Understanding how water is sourced, distributed, and consumed helps in making informed decisions
+        for water management, policy development, and addressing challenges such as climate variability
+        and increasing demand from various sectors.
+      </p>
     </div>
-    <div id="line-chart" class="vis"></div>
+
+    <!-- Visualizations Section -->
+    <div id="visualizations" class="section">
+      <h2>Interactive Visualizations</h2>
+
+      <!-- Map Visualization -->
+      <div class="vis-container">
+        <h3>Australian Water Use by State (2021-22)</h3>
+        <div id="map" class="vis"></div>
+      </div>
+
+      <!-- Line Chart Visualization -->
+      <div class="vis-container">
+        <h3 id="dynamic-title">Water Indicators Over Time</h3>
+        <div id="line-chart" class="vis"></div>
+      </div>
+    </div>
+
+
   </div>
 
+  <!-- Footer Section -->
+  <div class="footer">
+    &copy; 2023 Water Account Australia Dashboard. All rights reserved.
+  </div>
+
+  <!-- Scripts -->
   <script type="text/javascript">
     // Map Specification
     const mapSpec = {
       "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
       "width": "container",
-      "height": "container",
+      "height": 500,
       "projection": {
         "type": "mercator"
       },
@@ -129,7 +227,7 @@
             "url": "https://raw.githubusercontent.com/Lhart0050/population-density-map/main/australian_states.topojson",
             "format": {
               "type": "topojson",
-              "feature": "ne_50m_admin_1_states_provinces"  
+              "feature": "ne_50m_admin_1_states_provinces"
             }
           },
           "transform": [
@@ -184,21 +282,21 @@
             "url": "https://raw.githubusercontent.com/Lhart0050/population-density-map/main/australian_states.topojson",
             "format": {
               "type": "topojson",
-              "feature": "ne_50m_graticules_30"  
+              "feature": "ne_50m_graticules_30"
             }
           },
           "mark": {
             "type": "geoshape",
-            "stroke": "#4a4646",      
+            "stroke": "#4a4646",
             "strokeWidth": 0.5,
-            "fill": null             
+            "fill": null
           },
           "encoding": {},
-          "interactive": false       
+          "interactive": false
         }
       ],
       "config": {
-        "background": "#f9f9f9", /* Greyish background */
+        "background": "#f9f9f9",
         "legend": {
           "titleFontSize": 14,
           "labelFontSize": 12
@@ -206,12 +304,12 @@
       }
     };
 
-    // Updated Line Chart Specification with Conditional and Improved Annotations
+    // Line Chart Specification
     const lineChartSpec = {
       "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
       "description": "Line Chart with Filters, Dynamic Title, and Conditional Annotations",
       "width": "container",
-      "height": "container",
+      "height": 500,
       "data": {
         "url": "https://raw.githubusercontent.com/Lhart0050/population-density-map/main/reshaped_data.csv",
         "format": {"type": "csv"}
@@ -303,7 +401,7 @@
             ]
           }
         },
-        // Dam Storage Annotations Layer
+        // Annotations Layer
         {
           "data": {
             "values": [
@@ -312,55 +410,7 @@
                 "Year": "2021-22",
                 "Text": "Record Dam Storage in 2021-22",
                 "Color": "red"
-              }
-            ]
-          },
-          "transform": [
-            {"filter": "datum.Indicator === IndicatorSelect"}
-          ],
-          "mark": {
-            "type": "rule",
-            "color": "red", // Set color directly
-            "strokeWidth": 2
-          },
-          "encoding": {
-            "x": {"field": "Year", "type": "ordinal"}
-          }
-        },
-        {
-          "data": {
-            "values": [
-              {
-                "Indicator": "Accessible volume in major dam storages as of June 30 ",
-                "Year": "2021-22",
-                "Text": "Record Dam Storage in 2021-22",
-                "Color": "red"
-              }
-            ]
-          },
-          "transform": [
-            {"filter": "datum.Indicator === IndicatorSelect"}
-          ],
-          "mark": {
-            "type": "text",
-            "align": "right", // Align text to the right
-            "dx": -5, // Offset text to the left of the rule
-            "dy": 0, // No vertical offset since it's centered
-            "fontSize": 12,
-            "fontWeight": "bold",
-            "color": "red" // Set color directly
-          },
-          "encoding": {
-            "x": {"field": "Year", "type": "ordinal"},
-            "y": {"value": 225}, // Fixed y position in the middle (assuming chart height is 450px)
-            "text": {"field": "Text"}
-          }
-        },
-        // Rainfall Annotations Layer
-        {
-          "data": {
-            "values": [
-              // Annotation 1: High Rainfall in 2016-17
+              },
               {
                 "Indicator": "Area-average rainfall ",
                 "Year": "2016-17",
@@ -372,48 +422,39 @@
           "transform": [
             {"filter": "datum.Indicator === IndicatorSelect"}
           ],
-          "mark": {
-            "type": "rule",
-            "color": "green", // Set color directly
-            "strokeWidth": 2
-          },
-          "encoding": {
-            "x": {"field": "Year", "type": "ordinal"}
-          }
-        },
-        {
-          "data": {
-            "values": [
-              // Annotation 1: High Rainfall in 2016-17
-              {
-                "Indicator": "Area-average rainfall ",
-                "Year": "2016-17",
-                "Text": "High Rainfall in 2016-17",
-                "Color": "green"
+          "layer": [
+            {
+              "mark": {
+                "type": "rule",
+                "strokeDash": [6,2],
+                "strokeWidth": 2
+              },
+              "encoding": {
+                "x": {"field": "Year", "type": "ordinal"},
+                "color": {"field": "Color", "type": "nominal", "legend": null}
               }
-            ]
-          },
-          "transform": [
-            {"filter": "datum.Indicator === IndicatorSelect"}
-          ],
-          "mark": {
-            "type": "text",
-            "align": "left",
-            "dx": 5, // Offset text to the right of the rule
-            "dy": 10, // Offset text downwards
-            "fontSize": 12,
-            "fontWeight": "bold",
-            "color": "green" // Set color directly
-          },
-          "encoding": {
-            "x": {"field": "Year", "type": "ordinal"},
-            "y": {"value": 50}, // Fixed y position at the top
-            "text": {"field": "Text"}
-          }
+            },
+            {
+              "mark": {
+                "type": "text",
+                "align": "left",
+                "dx": 5,
+                "dy": -10,
+                "fontSize": 12,
+                "fontWeight": "bold"
+              },
+              "encoding": {
+                "x": {"field": "Year", "type": "ordinal"},
+                "y": {"aggregate": "max", "field": "Value"},
+                "text": {"field": "Text"},
+                "color": {"field": "Color", "type": "nominal", "legend": null}
+              }
+            }
+          ]
         }
       ],
       "config": {
-        "background": "#f5f5f5", /* Greyish background for the chart */
+        "background": "#f5f5f5",
         "legend": {
           "titleFontSize": 14,
           "labelFontSize": 12
@@ -429,13 +470,13 @@
     function updateDynamicTitle(indicator, regions) {
       const titleElement = document.getElementById('dynamic-title');
       let regionsText = 'All States';
-      
+
       if (regions.length > 1 || (regions.length === 1 && regions[0] !== 'All States')) {
         regionsText = regions.join(', ');
       }
 
-      const formattedIndicator = indicator.trim(); // Trim to remove extra spaces
-      titleElement.textContent = `Water Sources by ${formattedIndicator} in ${regionsText} Yearly`;
+      const formattedIndicator = indicator.trim();
+      titleElement.textContent = `${formattedIndicator} in ${regionsText} Over Time`;
     }
 
     // Embed the Line Chart and set up signal listeners
