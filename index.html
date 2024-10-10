@@ -96,6 +96,14 @@
       height: 500px;
     }
 
+    /* Dynamic Title Styling */
+    #dynamic-title {
+      font-size: 22px;
+      margin-bottom: 20px;
+      text-align: center;
+      color: #00796b;
+    }
+
     /* Button Styling */
     .download-button {
       display: inline-block;
@@ -164,6 +172,7 @@
   <div class="navbar">
     <a href="#story">Story</a>
     <a href="#visualizations">Visualizations</a>
+    <a href="#data-download">Data Download</a>
   </div>
 
   <!-- Main Container -->
@@ -198,11 +207,20 @@
 
       <!-- Line Chart Visualization -->
       <div class="vis-container">
-        <h3 id="dynamic-title">Water Indicators Over Time</h3>
+        <div id="dynamic-title">Water Indicators Over Time</div>
         <div id="line-chart" class="vis"></div>
       </div>
     </div>
 
+    <!-- Data Download Section -->
+    <div id="data-download" class="section">
+      <h2>Data Download</h2>
+      <p>
+        The datasets used in this dashboard are available for download. They provide detailed information
+        on water use, consumption, and indicators across different regions and industries in Australia.
+      </p>
+      <a href="https://example.com/data-download" class="download-button">Download Data</a>
+    </div>
 
   </div>
 
@@ -304,7 +322,7 @@
       }
     };
 
-    // Line Chart Specification
+    // Line Chart Specification with Dynamic Title
     const lineChartSpec = {
       "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
       "description": "Line Chart with Filters, Dynamic Title, and Conditional Annotations",
