@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Australia Water Consumption Infographic</title>
+    <!-- Include Vega, Vega-Lite, and Vega-Embed Libraries -->
+    <script src="https://cdn.jsdelivr.net/npm/vega@5"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vega-lite@5"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vega-embed@6"></script>
+    <!-- Include D3.js for Data Manipulation -->
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 20px;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        .controls {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+            width: 800px;
+            margin-bottom: 20px;
+        }
+        .controls div {
+            margin: 0 20px;
+        }
+        .category-cards, .summary-cards {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-around;
+            width: 800px;
+            margin-top: 20px;
+        }
+        .card {
+            border: 1px solid #ccc;
+            padding: 15px;
+            border-radius: 8px;
+            width: 180px;
+            text-align: center;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .card:hover {
+            background-color: #f0f0f0;
+        }
+        .active {
+            background-color: #d0eaff;
+            border-color: #007BFF;
+        }
+        #map {
+            width: 800px;
+            height: 600px;
+            margin-top: 20px;
+        }
+        .summary-cards .card {
+            width: 200px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Every Drop Counts: Australia's Water Consumption</h1>
+
+    <!-- Controls: Year Slider -->
+    <div class="controls">
+        <div>
+            <label for="yearSlider">Select Year: <span id="selectedYear">2021-22</span></label><br>
+            <input type="range" id="yearSlider" min="2014" max="2021" step="1" value="2021">
+        </div>
+    </div>
+
+    <!-- Category Cards -->
+    <div class="category-cards">
+        <div class="card active" data-category="Total water consumption">
+            <h3>Total Consumption</h3>
+        </div>
+        <div class="card" data-category="Total water use by industry">
+            <h3>Industry</h3>
+        </div>
+        <div class="card" data-category="Total water use by Agriculture, forestry and fishing industry">
+            <h3>Agriculture</h3>
+        </div>
+        <div class="card" data-category="Total water use by households">
+            <h3>Households</h3>
+        </div>
+        <!-- Add more category cards as needed -->
+    </div>
+
+    <!-- Vega-Lite Map -->
+    <div id="map"></div>
+
+    <!-- Summary Cards -->
+    <div class="summary-cards">
+        <div class="card">
+            <h3>Total Agriculture Consumption</h3>
+            <p id="totalAgriculture">0 ML</p>
+        </div>
+        <div class="card">
+            <h3>Per Capita Usage</h3>
+            <p id="perCapita">0.57 ML</p>
+        </div>
+        <div class="card">
+            <h3>Per Household Usage</h3>
+            <p id="perHousehold">0.18 ML</p>
+        </div>
+    </div>
+
+    <script>
+        // URLs to the data files
+        const topoJSONURL = "https://raw.githubusercontent.com/Lhart0050/population-density-map/refs/heads/Assignment/australian_states.topojson";
+        const dataURL = "https://raw.githubusercontent.com/Lhart0050/population-density-map/refs/heads/Assignment/water_consumption_long_cleaned.csv";
+
+        // Initial selected year and category
+        let selectedYear = "2021-22";
+        let selectedCategory = "Total water consumption";
+
+        // Function to map slider value to fiscal year string
+        function getFiscalYear(year) {
+            const fiscalEnd = year + 1;
+            return `${year}-${fiscalEnd.toString().slice(-2)}`;
+        }
+
+        // Initialize Year Slider
+        const yearSlider = document.getElementById('yearSlider');
+        const selectedYearSpan = document.getElementById('selectedYear');
+
+        yearSlider.addEventListener('input', function() {
+            const year = parseInt(this.value);
+            selectedYear = getFiscalYear(year);
+            selectedYearSpan.innerText = selectedYear;
+            updateMap();
+            updateSummary();
+        });
+
+        // Initialize Category Cards
+        const categoryCards = document.querySelectorAll('.category-cards .card');
+        categoryCards.forEach(card => {
+            card.addEventListener('click', function() {
+                // Remove 'active' class from all cards
+                categoryCards.forEach(c => c.classList.remove('active'));
+                // Add 'active' class to the clicked card
+                this.classList.add('active');
+                // Update selected category
+                selectedCategory = this.getAttribute('data-category');
+                updateMap();
+                updateSummary();
+            });
+        });
+
+        // Load Data with Row Conversion
+        d3.csv(dataURL, d => ({
+            Region: d.Region,
+            Indicator: d.Indicator ? d.Indicator.trim().replace(/^"|"$/g, '') : '',  // Remove surrounding double quotes
+            Year: d.Year,
+            Value: d.Value ? parseFloat(d.Value.replace(/,/g, '')) : null  // Handle missing or empty 'Value'
+        })).then(data => {
+            // Exclude 'Australia' entries for mapping
+            window.waterData = data.filter(d => d.Value !== null && d.Region !== 'Australia');
+            
+            // Log to verify data loading
+            console.log("Loaded Water Data (excluding 'Australia'):", window.waterData);  // Debugging
+            
+            // Check for missing Agriculture data
+            const agricultureMissing = window.waterData.filter(d => d.Indicator === 'Total water use by Agriculture, forestry and fishing industry' && !d.Value);
+            if (agricultureMissing.length > 0) {
+                console.warn("Missing Agriculture data for the following regions and years:", agricultureMissing);
+            }
+
+            updateMap();
+            updateSummary();
+        }).catch(error => {
+            console.error("Error loading CSV data:", error);
+        });
+
+        // Function to filter data based on selected year and category
+        function filterData() {
+            return window.waterData.filter(d => d.Year === selectedYear && d.Indicator === selectedCategory);
+        }
+
+        // Function to update the map
+        function updateMap() {
+            const filteredData = filterData();
+            // Create a mapping from Region to Value
+            const australiaData = {};
+            filteredData.forEach(d => {
+                australiaData[d.Region] = d.Value;
+            });
+
+            console.log("Australia Data for Map:", australiaData);  // Debugging
+
+            const vlSpec = {
+                "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+                "description": `Isotype Map of Australia's ${selectedCategory} (${selectedYear})`,
+                "width": 800,
+                "height": 600,
+                "data": {
+                    "url": topoJSONURL,
+                    "format": {
+                        "type": "topojson",
+                        "feature": "ne_50m_admin_1_states_provinces"  // Correct feature name
+                    }
+                },
+                "layer": [
+                    {
+                        "transform": [
+                            {
+                                "lookup": "properties.name",  // Using 'name' property for lookup
+                                "from": {
+                                    "data": {
+                                        "values": Object.entries(australiaData).map(([region, value]) => ({Region: region, Value: value}))
+                                    },
+                                    "key": "Region",
+                                    "fields": ["Value"]
+                                }
+                            }
+                        ],
+                        "mark": {
+                            "type": "geoshape",
+                            "stroke": "white"
+                        },
+                        "encoding": {
+                            "color": {
+                                "field": "Value",
+                                "type": "quantitative",
+                                "title": getColorTitle(selectedCategory),
+                                "scale": {
+                                    "scheme": "blues"
+                                }
+                            },
+                            "tooltip": [
+                                {"field": "properties.name", "type": "nominal", "title": "State"},
+                                {"field": "Value", "type": "quantitative", "title": getTooltipTitle(selectedCategory), "format": ","}
+                            ]
+                        }
+                    },
+                ],
+                "projection": {
+                    "type": "mercator"
+                },
+                "config": {
+                    "background": "#f9f9f9"
+                }
+            };
+
+            // Embed the visualization
+            vegaEmbed('#map', vlSpec).then(result => {
+                // Additional interactions can be added here if needed
+            }).catch(error => {
+                console.error("Error embedding Vega-Lite map:", error);
+            });
+        }
+
+        // Function to get color title based on category
+        function getColorTitle(category) {
+            switch(category) {
+                case "Total water consumption":
+                    return "Total Water Consumption (ML)";
+                case "Total water use by industry":
+                    return "Total Water Use by Industry (ML)";
+                case "Total water use by Agriculture, forestry and fishing industry":
+                    return "Total Water Use by Agriculture (ML)";
+                case "Total water use by households":
+                    return "Total Water Use by Households (ML)";
+                default:
+                    return "Value";
+            }
+        }
+
+        // Function to get tooltip title based on category
+        function getTooltipTitle(category) {
+            switch(category) {
+                case "Total water consumption":
+                    return "Total Consumption (ML)";
+                case "Total water use by industry":
+                    return "Total Water Use by Industry (ML)";
+                case "Total water use by Agriculture, forestry and fishing industry":
+                    return "Total Water Use by Agriculture (ML)";
+                case "Total water use by households":
+                    return "Total Water Use by Households (ML)";
+                default:
+                    return "Value";
+            }
+        }
+
+        // Function to update summary cards
+        function updateSummary() {
+            if (selectedCategory === "Total water use by Agriculture, forestry and fishing industry") {
+                const agricultureData = window.waterData.filter(d => d.Indicator === selectedCategory && d.Year === selectedYear);
+                
+                // Sum all agriculture values across regions
+                const totalAgriculture = agricultureData.reduce((sum, d) => sum + d.Value, 0);
+                document.getElementById('totalAgriculture').innerText = `${totalAgriculture.toLocaleString()} ML`;
+                
+                // Optionally, clear or update other summary fields
+                document.getElementById('perCapita').innerText = 'N/A';  // Adjust based on your summary needs
+                document.getElementById('perHousehold').innerText = 'N/A';
+            } else {
+                // Handle other categories as needed
+                // Per Capita Usage
+                const perCapitaEntry = window.waterData.find(d => d.Indicator === 'Total water use less Electricity, gas, water and waste services per capita' && d.Year === selectedYear);
+                const perCapita = perCapitaEntry ? perCapitaEntry.Value : 'N/A';
+                document.getElementById('perCapita').innerText = perCapita !== 'N/A' ? `${perCapita} ML` : 'N/A';
+
+                // Per Household Usage
+                const perHouseholdEntry = window.waterData.find(d => d.Indicator === 'Total household water use per household' && d.Year === selectedYear);
+                const perHousehold = perHouseholdEntry ? perHouseholdEntry.Value : 'N/A';
+                document.getElementById('perHousehold').innerText = perHousehold !== 'N/A' ? `${perHousehold} ML` : 'N/A';
+
+                // Clear Agriculture Summary
+                document.getElementById('totalAgriculture').innerText = '0 ML';
+            }
+        }
+    </script>
+
+</body>
+</html>

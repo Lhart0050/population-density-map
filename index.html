@@ -1,507 +1,518 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Water Account Australia Dashboard</title>
-  <!-- Vega Libraries -->
-  <script src="https://cdn.jsdelivr.net/npm/vega@5"></script>
-  <script src="https://cdn.jsdelivr.net/npm/vega-lite@5"></script>
-  <script src="https://cdn.jsdelivr.net/npm/vega-embed@6"></script>
-  <!-- Styling -->
-  <style>
-    /* Reset default margins and paddings */
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    /* Body Styling */
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background-color: #f0f4f8;
-      color: #333;
-    }
-
-    /* Header Styling */
-    .header {
-      background-color: #00796b;
-      color: #fff;
-      padding: 20px;
-      text-align: center;
-    }
-
-    .header h1 {
-      font-size: 36px;
-      margin-bottom: 10px;
-    }
-
-    .header p {
-      font-size: 18px;
-    }
-
-    /* Navigation Bar */
-    .navbar {
-      display: flex;
-      justify-content: center;
-      background-color: #004d40;
-    }
-
-    .navbar a {
-      color: #fff;
-      padding: 14px 20px;
-      text-decoration: none;
-      font-size: 16px;
-    }
-
-    .navbar a:hover {
-      background-color: #00332e;
-    }
-
-    /* Main Content Styling */
-    .container {
-      max-width: 1200px;
-      margin: 40px auto;
-      padding: 0 20px;
-    }
-
-    /* Section Styling */
-    .section {
-      margin-bottom: 60px;
-    }
-
-    .section h2 {
-      font-size: 28px;
-      margin-bottom: 20px;
-      border-bottom: 2px solid #ccc;
-      padding-bottom: 10px;
-    }
-
-    .section p {
-      font-size: 16px;
-      line-height: 1.6;
-    }
-
-    /* Visualization Styling */
-    .vis-container {
-      background-color: #ffffff;
-      border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-      padding: 20px;
-      margin-top: 30px;
-    }
-
-    .vis {
-      width: 100%;
-      height: 500px;
-    }
-
-    /* Button Styling */
-    .download-button {
-      display: inline-block;
-      background-color: #00796b;
-      color: #fff;
-      padding: 12px 24px;
-      border-radius: 8px;
-      text-decoration: none;
-      font-size: 16px;
-      margin-top: 20px;
-    }
-
-    .download-button:hover {
-      background-color: #00594d;
-    }
-
-    /* Footer Styling */
-    .footer {
-      background-color: #004d40;
-      color: #fff;
-      text-align: center;
-      padding: 20px;
-      margin-top: 40px;
-    }
-
-    /* Tooltip Styling */
-    .vega-tooltip {
-      position: absolute;
-      pointer-events: none;
-      background-color: rgba(255, 255, 255, 0.95);
-      border: 1px solid #cccccc;
-      border-radius: 4px;
-      padding: 10px;
-      font-size: 14px;
-      color: #333333;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-      max-width: 300px;
-    }
-
-    .vega-tooltip table {
-      border-collapse: collapse;
-      width: 100%;
-    }
-
-    .vega-tooltip th,
-    .vega-tooltip td {
-      padding: 4px 8px;
-      text-align: left;
-    }
-
-    .vega-tooltip th {
-      font-weight: bold;
-      border-bottom: 1px solid #cccccc;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Australia Water Consumption Infographic</title>
+    <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vega@5"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vega-lite@5"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vega-embed@6"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .header {
+            background: linear-gradient(to bottom, #3730a3, #4338ca);
+            color: white;
+            padding: 20px;
+            border-radius: 8px 8px 0 0;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 2.5rem;
+        }
+        .header p {
+            margin: 10px 0 0;
+            font-size: 1.25rem;
+        }
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-top: 20px;
+        }
+        .card {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+        .card.selected {
+            border: 2px solid #3b82f6;
+        }
+        .card-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .card-title {
+            font-size: 0.875rem;
+            color: #6b7280;
+        }
+        .card-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-top: 5px;
+        }
+        .card-icon {
+            font-size: 1.5rem;
+            color: #3b82f6;
+        }
+        .map-charts {
+            display: flex;
+            margin-top: 20px;
+            gap: 20px;
+        }
+        .map {
+            flex: 1;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 20px;
+        }
+        .charts {
+            flex: 1;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 20px;
+        }
+        .subtitle {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .description {
+            color: #4b5563;
+            margin-bottom: 20px;
+        }
+        #selectedState {
+            margin-top: 20px;
+            padding: 20px;
+            background-color: #e0f2fe;
+            border-radius: 8px;
+        }
+        #map {
+            position: relative;
+            height: 400px;
+        }
+        .map-legend {
+            display: flex;
+            flex-direction: column;  /* Vertical layout */
+            align-items: flex-start; /* Align items */
+            margin-top: 20px;
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 10px;
+            border-radius: 4px;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 5px;
+        }
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            margin-right: 5px;
+        }
+        .year-selector {
+            display: flex;
+            justify-content: center;  /* Center the year slider */
+            align-items: center;
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #3b82f6;
+            color: white;
+        }
+    </style>
 </head>
 <body>
+    <div class="container">
+        <div class="header">
+            <h1>Every Drop Counts: Australia's Water Consumption</h1>
+            <p>Visualizing water usage across different sectors and regions</p>
+        </div>
 
-  <!-- Header Section -->
-  <div class="header">
-    <h1>Water Account Australia Dashboard</h1>
-    <p>Exploring the Physical and Monetary Supply and Use of Water in the Australian Economy</p>
-  </div>
+        <div class="cards">
+            <div class="card" data-category="Total water consumption">
+                <div class="card-content">
+                    <div>
+                        <div class="card-title">Total Consumption</div>
+                        <div class="card-value" id="totalConsumption">0 ML</div>
+                    </div>
+                    <div class="card-icon">💧</div>
+                </div>
+            </div>
+            <div class="card" data-category="Total water use by industry">
+                <div class="card-content">
+                    <div>
+                        <div class="card-title">Industry Use</div>
+                        <div class="card-value" id="industryUse">0 ML</div>
+                    </div>
+                    <div class="card-icon">🏭</div>
+                </div>
+            </div>
+            <div class="card" data-category="Total water use by Agriculture, forestry and fishing industry">
+                <div class="card-content">
+                    <div>
+                        <div class="card-title">Agriculture Use</div>
+                        <div class="card-value" id="agricultureUse">0 ML</div>
+                    </div>
+                    <div class="card-icon">🚜</div>
+                </div>
+            </div>
+            <div class="card" data-category="Total water use by households">
+                <div class="card-content">
+                    <div>
+                        <div class="card-title">Household Use</div>
+                        <div class="card-value" id="householdUse">0 ML</div>
+                    </div>
+                    <div class="card-icon">🏠</div>
+                </div>
+            </div>
+        </div>
 
-  <!-- Navigation Bar -->
-  <div class="navbar">
-    <a href="#story">Story</a>
-    <a href="#visualizations">Visualizations</a>
-  </div>
+        <div class="map-charts">
+            <div class="map">
+                <div id="map"></div>
+                <div class="map-legend" id="mapLegend"></div>
+                <div class="year-selector">
+                    <span>Select Year: <span id="selectedYear">2021-22</span></span>
+                    <input type="range" id="yearSlider" min="2014" max="2021" value="2021">
+                </div>
+            </div>
+            <div class="charts">
+                <h2 class="subtitle" id="chartSubtitle">Water Usage in Australia</h2>
+                <p class="description" id="chartDescription">Visualizing water usage data to gain insights into consumption patterns and promote sustainable practices.</p>
+                <div id="donutCharts"></div>
+            </div>
+        </div>
 
-  <!-- Main Container -->
-  <div class="container">
-
-    <!-- Story Section -->
-    <div id="story" class="section">
-      <h2>Understanding Australia's Water Resources</h2>
-      <p>
-        The Water Account, Australia provides a comprehensive overview of the nation's water resources,
-        focusing on the physical and monetary aspects of water supply and usage within the Australian economy.
-        The latest release highlights significant trends in water consumption, industry usage, and the
-        economic value attributed to water resources across different regions and sectors.
-      </p>
-      <p>
-        Water is a vital resource for Australia's environmental sustainability and economic prosperity.
-        Understanding how water is sourced, distributed, and consumed helps in making informed decisions
-        for water management, policy development, and addressing challenges such as climate variability
-        and increasing demand from various sectors.
-      </p>
+        <div id="selectedState" style="display: none;">
+            <h2>Selected State: <span id="stateName"></span></h2>
+            <p>Total Consumption: <span id="stateConsumption"></span> ML</p>
+            <p>Industry Use: <span id="stateIndustry"></span> ML</p>
+            <p>Agriculture Use: <span id="stateAgriculture"></span> ML</p>
+            <p>Household Use: <span id="stateHousehold"></span> ML</p>
+        </div>
     </div>
 
-    <!-- Visualizations Section -->
-    <div id="visualizations" class="section">
-      <h2>Interactive Visualizations</h2>
+    <script>
+        const topoJSONURL = "https://raw.githubusercontent.com/Lhart0050/population-density-map/refs/heads/Assignment/australian_states.topojson";
+        const dataURL = "https://raw.githubusercontent.com/Lhart0050/population-density-map/refs/heads/Assignment/water_consumption_long_cleaned.csv";
 
-      <!-- Map Visualization -->
-      <div class="vis-container">
-        <h3>Australian Water Use by State (2021-22)</h3>
-        <div id="map" class="vis"></div>
-      </div>
+        let waterData = [];
+        let selectedYear = "2021-22";
+        let selectedCategory = "Total water consumption";
+        let selectedState = null;
 
-      <!-- Line Chart Visualization -->
-      <div class="vis-container">
-        <h3 id="dynamic-title">Water Indicators Over Time</h3>
-        <div id="line-chart" class="vis"></div>
-      </div>
-    </div>
+        function updateYearDisplay() {
+            document.getElementById('selectedYear').textContent = selectedYear;
+        }
 
+        function handleYearChange(event) {
+            const year = parseInt(event.target.value);
+            const fiscalEnd = year + 1;
+            selectedYear = `${year}-${fiscalEnd.toString().slice(-2)}`;
+            updateYearDisplay();
+            updateAll();
+        }
 
-  </div>
+        function handleCategoryChange(category) {
+            selectedCategory = category;
+            selectedState = null;
+            updateAll();
+        }
 
-  <!-- Footer Section -->
-  <div class="footer">
-    &copy; laurentius
-  </div>
+        function updateSummary() {
+            const yearData = waterData.filter(d => d.Year === selectedYear);
+            const relevantData = selectedState 
+                ? yearData.filter(d => d.Region === selectedState)
+                : yearData.filter(d => d.Region === 'Australia');
 
-  <!-- Scripts -->
-  <script type="text/javascript">
-    // Map Specification
-    const mapSpec = {
-      "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
-      "width": "container",
-      "height": 500,
-      "projection": {
-        "type": "mercator"
-      },
-      "layer": [
-        {
-          "data": {
-            "url": "https://raw.githubusercontent.com/Lhart0050/population-density-map/main/australian_states.topojson",
-            "format": {
-              "type": "topojson",
-              "feature": "ne_50m_admin_1_states_provinces"
+            const summaryData = {
+                totalConsumption: relevantData.find(d => d.Indicator === "Total water consumption")?.Value || 0,
+                industryUse: relevantData.find(d => d.Indicator === "Total water use by industry")?.Value || 0,
+                agricultureUse: relevantData.find(d => d.Indicator === "Total water use by Agriculture, forestry and fishing industry")?.Value || 0,
+                householdUse: relevantData.find(d => d.Indicator === "Total water use by households")?.Value || 0
+            };
+
+            document.getElementById('totalConsumption').textContent = `${summaryData.totalConsumption.toLocaleString()} ML`;
+            document.getElementById('industryUse').textContent = `${summaryData.industryUse.toLocaleString()} ML`;
+            document.getElementById('agricultureUse').textContent = `${summaryData.agricultureUse.toLocaleString()} ML`;
+            document.getElementById('householdUse').textContent = `${summaryData.householdUse.toLocaleString()} ML`;
+
+            if (selectedState) {
+                document.getElementById('selectedState').style.display = 'block';
+                document.getElementById('stateName').textContent = selectedState;
+                document.getElementById('stateConsumption').textContent = summaryData.totalConsumption.toLocaleString();
+                document.getElementById('stateIndustry').textContent = summaryData.industryUse.toLocaleString();
+                document.getElementById('stateAgriculture').textContent = summaryData.agricultureUse.toLocaleString();
+                document.getElementById('stateHousehold').textContent = summaryData.householdUse.toLocaleString();
+            } else {
+                document.getElementById('selectedState').style.display = 'none';
             }
-          },
-          "transform": [
-            {
-              "lookup": "properties.name",
-              "from": {
-                "data": {
-                  "url": "https://raw.githubusercontent.com/Lhart0050/population-density-map/main/water_use_2021_22.csv",
-                  "format": { "type": "csv" }
+        }
+
+        function updateMap() {
+            const filteredData = waterData.filter(d => d.Year === selectedYear && d.Indicator === selectedCategory && d.Region !== 'Australia');
+            const australiaData = {};
+            filteredData.forEach(d => {
+                australiaData[d.Region] = d.Value;
+            });
+
+            const vlSpec = {
+                $schema: "https://vega.github.io/schema/vega-lite/v5.json",
+                width: 400,  
+                height: 400,
+                data: {
+                    url: topoJSONURL,
+                    format: { type: "topojson", feature: "ne_50m_admin_1_states_provinces" }
                 },
-                "key": "Region",
-                "fields": [
-                  "Total Water Use (ML)",
-                  "Total Water Use by Industry (ML)",
-                  "Total Water Use by Agriculture (ML)",
-                  "Total Water Use by Households (ML)",
-                  "Total Water Consumption (ML)"
+                projection: { type: "mercator" },
+                layer: [
+                    {
+                        transform: [
+                            {
+                                lookup: "properties.name",
+                                from: {
+                                    data: { values: Object.entries(australiaData).map(([region, value]) => ({Region: region, Value: value})) },
+                                    key: "Region",
+                                    fields: ["Value"]
+                                }
+                            }
+                        ],
+                        mark: { type: "geoshape", stroke: "white", strokeWidth: 1 },
+                        encoding: {
+                            color: {
+                                field: "Value",
+                                type: "quantitative",
+                                title: getColorTitle(selectedCategory),
+                                scale: { scheme: "blues" }
+                            },
+                            tooltip: [
+                                {field: "properties.name", type: "nominal", title: "State"},
+                                {field: "Value", type: "quantitative", title: getTooltipTitle(selectedCategory), format: ","}
+                            ]
+                        },
+                        selection: {
+                            stateSelect: {type: "single", fields: ["properties.name"]}
+                        }
+                    },
+                    {
+                        mark: {type: "geoshape", stroke: "orange", strokeWidth: 2, fill: null},
+                        transform: [
+                            {
+                                filter: {selection: "stateSelect"}
+                            }
+                        ]
+                    }
                 ]
-              }
+            };
+
+            vegaEmbed('#map', vlSpec).then(result => {
+                result.view.addEventListener('click', (event, item) => {
+                    if (item && item.datum && item.datum.properties) {
+                        selectedState = item.datum.properties.name;
+                    } else {
+                        selectedState = null;
+                    }
+                    updateAll();
+                });
+
+                const colorScale = result.view.scale('color');
+                const legendContainer = document.getElementById('mapLegend');
+                legendContainer.innerHTML = '';
+                const legendItems = colorScale.domain().filter((d, i) => i % 2 === 0);
+                legendItems.forEach(value => {
+                    const legendItem = document.createElement('div');
+                    legendItem.className = 'legend-item';
+                    const colorBox = document.createElement('div');
+                    colorBox.className = 'legend-color';
+                    colorBox.style.backgroundColor = colorScale(value);
+                    const label = document.createElement('span');
+                    label.textContent = Math.round(value).toLocaleString();
+                    legendItem.appendChild(colorBox);
+                    legendItem.appendChild(label);
+                    legendContainer.appendChild(legendItem);
+                });
+            });
+        }
+
+        function updateDonutCharts() {
+    const perCapitaData = waterData.filter(d => 
+        d.Year === selectedYear && 
+        d.Indicator === "Total water use per capita" &&
+        d.Region !== 'Australia'
+    );
+
+    const perHouseholdData = waterData.filter(d => 
+        d.Year === selectedYear && 
+        d.Indicator === "Total household water use per household" &&
+        d.Region !== 'Australia'
+    );
+
+    const vlSpec = {
+        $schema: "https://vega.github.io/schema/vega-lite/v5.json",
+        width: 200,
+        height: 200,
+        data: { values: [...perCapitaData, ...perHouseholdData] },
+        transform: [
+            {
+                calculate: "datum.Indicator === 'Total water use per capita' ? 'Per Capita' : 'Per Household'",
+                as: "Chart"
             }
-          ],
-          "mark": {
-            "type": "geoshape",
-            "stroke": "white"
-          },
-          "encoding": {
-            "color": {
-              "field": "Total Water Use (ML)",
-              "type": "quantitative",
-              "title": "Total Water Use (ML)",
-              "scale": { "scheme": "blues" },
-              "legend": {
-                "orient": "right",
-                "titleFontSize": 14,
-                "labelFontSize": 12,
-                "titleColor": "#333",
-                "labelColor": "#333"
-              }
-            },
-            "tooltip": [
-              { "field": "properties.name", "type": "nominal", "title": "State" },
-              { "field": "Total Water Use (ML)", "type": "quantitative", "format": "," },
-              { "field": "Total Water Use by Industry (ML)", "type": "quantitative", "format": "," },
-              { "field": "Total Water Use by Agriculture (ML)", "type": "quantitative", "format": "," },
-              { "field": "Total Water Use by Households (ML)", "type": "quantitative", "format": "," },
-              { "field": "Total Water Consumption (ML)", "type": "quantitative", "format": "," }
-            ]
-          }
+        ],
+        facet: {
+            column: { field: "Chart", type: "nominal", title: null }
         },
-        {
-          "data": {
-            "url": "https://raw.githubusercontent.com/Lhart0050/population-density-map/main/australian_states.topojson",
-            "format": {
-              "type": "topojson",
-              "feature": "ne_50m_graticules_30"
-            }
-          },
-          "mark": {
-            "type": "geoshape",
-            "stroke": "#4a4646",
-            "strokeWidth": 0.5,
-            "fill": null
-          },
-          "encoding": {},
-          "interactive": false
+        spec: {
+            layer: [
+                {
+                    mark: { type: "arc", innerRadius: 50 },
+                    encoding: {
+                        theta: { field: "Value", type: "quantitative", stack: true },
+                        color: { 
+                            field: "Region", 
+                            type: "nominal", 
+                            scale: { scheme: "category10" },
+                            legend: { orient: "bottom", columns: 3, title: null }
+                        },
+                        tooltip: [
+                            { field: "Region", type: "nominal" },
+                            { field: "Value", type: "quantitative", format: ",.2f" }
+                        ]
+                    }
+                },
+                {
+                    mark: { type: "text", align: "center", baseline: "middle", dx: 0, dy: -15, fontSize: 14, fontWeight: "bold" },
+                    encoding: {
+                        text: {
+                            aggregate: "sum",
+                            field: "Value",
+                            type: "quantitative",
+                            format: ",.2f"
+                        }
+                    }
+                }
+            ]
+        },
+        config: {
+            view: { stroke: null },
+            axis: { grid: false, labels: false, ticks: false, domain: false }
         }
-      ],
-      "config": {
-        "background": "#f9f9f9",
-        "legend": {
-          "titleFontSize": 14,
-          "labelFontSize": 12
-        }
-      }
     };
 
-    // Line Chart Specification
-    const lineChartSpec = {
-      "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
-      "description": "Line Chart with Filters, Dynamic Title, and Conditional Annotations",
-      "width": "container",
-      "height": 500,
-      "data": {
-        "url": "https://raw.githubusercontent.com/Lhart0050/population-density-map/main/reshaped_data.csv",
-        "format": {"type": "csv"}
-      },
-      "transform": [
-        {
-          "calculate": "toNumber(datum.Value)",
-          "as": "Value"
-        },
-        {
-          "filter": "datum.Indicator == IndicatorSelect"
-        },
-        {
-          "filter": "RegionSelect === 'All States' || indexof(RegionSelect, datum.Region) >= 0"
-        }
-      ],
-      "params": [
-        {
-          "name": "IndicatorSelect",
-          "value": "Area-average rainfall ",
-          "bind": {
-            "input": "select",
-            "options": [
-              "Area-average rainfall ",
-              "Accessible volume in major dam storages as of June 30 "
-            ],
-            "name": "Select Indicator:"
-          }
-        },
-        {
-          "name": "RegionSelect",
-          "value": ["New South Wales"],
-          "bind": {
-            "input": "select",
-            "options": [
-              "All States",
-              "New South Wales",
-              "Victoria",
-              "Queensland",
-              "South Australia",
-              "Western Australia",
-              "Tasmania",
-              "Northern Territory",
-              "Australian Capital Territory"
-            ],
-            "name": "Select Region: ",
-            "multiple": true
-          }
-        }
-      ],
-      "layer": [
-        {
-          "mark": "line",
-          "encoding": {
-            "x": {"field": "Year", "type": "ordinal", "title": "Year"},
-            "y": {
-              "field": "Value",
-              "type": "quantitative",
-              "title": "Value",
-              "axis": {
-                "orient": "left",
-                "titleColor": "#333",
-                "labelColor": "#333",
-                "titleFontSize": 14,
-                "labelFontSize": 12
-              }
-            },
-            "color": {
-              "field": "Region",
-              "type": "nominal",
-              "title": "Region",
-              "legend": {
-                "titleFontSize": 14,
-                "labelFontSize": 12
-              }
+    vegaEmbed('#donutCharts', vlSpec, { actions: false });
+}
+
+
+        function getColorTitle(category) {
+            switch(category) {
+                case "Total water consumption":
+                    return "Total Water Consumption (ML)";
+                case "Total water use by industry":
+                    return "Total Water Use by Industry (ML)";
+                case "Total water use by Agriculture, forestry and fishing industry":
+                    return "Total Water Use by Agriculture (ML)";
+                case "Total water use by households":
+                    return "Total Water Use by Households (ML)";
+                default:
+                    return "Value";
             }
-          }
-        },
-        {
-          "mark": "point",
-          "encoding": {
-            "x": {"field": "Year", "type": "ordinal"},
-            "y": {"field": "Value", "type": "quantitative"},
-            "tooltip": [
-              {"field": "Region", "type": "nominal"},
-              {"field": "Indicator", "type": "nominal"},
-              {"field": "Year", "type": "ordinal"},
-              {"field": "Value", "type": "quantitative", "title": "Value"}
-            ]
-          }
-        },
-        // Annotations Layer
-        {
-          "data": {
-            "values": [
-              {
-                "Indicator": "Accessible volume in major dam storages as of June 30 ",
-                "Year": "2021-22",
-                "Text": "Record Dam Storage in 2021-22",
-                "Color": "red"
-              },
-              {
-                "Indicator": "Area-average rainfall ",
-                "Year": "2016-17",
-                "Text": "High Rainfall in 2016-17",
-                "Color": "green"
-              }
-            ]
-          },
-          "transform": [
-            {"filter": "datum.Indicator === IndicatorSelect"}
-          ],
-          "layer": [
-            {
-              "mark": {
-                "type": "rule",
-                "strokeDash": [6,2],
-                "strokeWidth": 2
-              },
-              "encoding": {
-                "x": {"field": "Year", "type": "ordinal"},
-                "color": {"field": "Color", "type": "nominal", "legend": null}
-              }
-            },
-            {
-              "mark": {
-                "type": "text",
-                "align": "left",
-                "dx": 5,
-                "dy": -10,
-                "fontSize": 12,
-                "fontWeight": "bold"
-              },
-              "encoding": {
-                "x": {"field": "Year", "type": "ordinal"},
-                "y": {"aggregate": "max", "field": "Value"},
-                "text": {"field": "Text"},
-                "color": {"field": "Color", "type": "nominal", "legend": null}
-              }
+        }
+
+        function getTooltipTitle(category) {
+            switch(category) {
+                case "Total water consumption":
+                    return "Total Consumption (ML)";
+                case "Total water use by industry":
+                    return "Total Water Use by Industry (ML)";
+                case "Total water use by Agriculture, forestry and fishing industry":
+                    return "Total Water Use by Agriculture (ML)";
+                case "Total water use by households":
+                    return "Total Water Use by Households (ML)";
+                default:
+                    return "Value";
             }
-          ]
         }
-      ],
-      "config": {
-        "background": "#f5f5f5",
-        "legend": {
-          "titleFontSize": 14,
-          "labelFontSize": 12
+
+        function getDynamicSubtitle() {
+            const region = selectedState || 'Australia';
+            switch(selectedCategory) {
+                case "Total water consumption":
+                    return `Total Consumption of Water in ${region}`;
+                case "Total water use by industry":
+                    return `Industry Use of Water in ${region}`;
+                case "Total water use by Agriculture, forestry and fishing industry":
+                    return `Agriculture Use of Water in ${region}`;
+                case "Total water use by households":
+                    return `Household Use of Water in ${region}`;
+                default:
+                    return `Water Usage in ${region}`;
+            }
         }
-      }
-    };
 
-    // Embed the Map
-    vegaEmbed('#map', mapSpec, { tooltip: { theme: 'light' } }).then(function(result) {
-    }).catch(console.error);
+        function getDynamicParagraph() {
+            switch(selectedCategory) {
+                case "Total water consumption":
+                    return "Analyzing overall water usage patterns across different regions to identify consumption trends and potential conservation areas.";
+                case "Total water use by industry":
+                    return "Examining industrial water consumption to understand resource allocation and efficiency in various sectors.";
+                case "Total water use by Agriculture, forestry and fishing industry":
+                    return "Investigating water usage in agriculture and related industries to assess sustainability and irrigation practices.";
+                case "Total water use by households":
+                    return "Exploring residential water consumption patterns to promote awareness and encourage water-saving habits.";
+                default:
+                    return "Visualizing water usage data to gain insights into consumption patterns and promote sustainable practices.";
+            }
+        }
 
-    // Function to update the dynamic title
-    function updateDynamicTitle(indicator, regions) {
-      const titleElement = document.getElementById('dynamic-title');
-      let regionsText = 'All States';
+        function updateAll() {
+            updateMap();
+            updateSummary();
+            updateDonutCharts();
+            document.getElementById('chartSubtitle').textContent = getDynamicSubtitle();
+            document.getElementById('chartDescription').textContent = getDynamicParagraph();
+            document.querySelectorAll('.card').forEach(card => {
+                card.classList.toggle('selected', card.dataset.category === selectedCategory);
+            });
+        }
 
-      if (regions.length > 1 || (regions.length === 1 && regions[0] !== 'All States')) {
-        regionsText = regions.join(', ');
-      }
+        // Event Listeners
+        document.getElementById('yearSlider').addEventListener('input', handleYearChange);
 
-      const formattedIndicator = indicator.trim();
-      titleElement.textContent = `${formattedIndicator} in ${regionsText} Over Time`;
-    }
+        document.querySelectorAll('.card').forEach(card => {
+            card.addEventListener('click', () => handleCategoryChange(card.dataset.category));
+        });
 
-    // Embed the Line Chart and set up signal listeners
-    vegaEmbed('#line-chart', lineChartSpec, { actions: false }).then(function(result) {
-      const view = result.view;
-
-      // Initial title setup
-      const initialIndicator = view.signal('IndicatorSelect');
-      const initialRegions = view.signal('RegionSelect');
-      updateDynamicTitle(initialIndicator, initialRegions);
-
-      // Function to handle updates
-      function handleUpdate() {
-        const currentIndicator = view.signal('IndicatorSelect');
-        const currentRegions = view.signal('RegionSelect');
-        updateDynamicTitle(currentIndicator, currentRegions);
-      }
-
-      // Listen to changes in IndicatorSelect
-      view.addSignalListener('IndicatorSelect', handleUpdate);
-
-      // Listen to changes in RegionSelect
-      view.addSignalListener('RegionSelect', handleUpdate);
-
-    }).catch(console.error);
-  </script>
+        // Initial data load
+        d3.csv(dataURL, d => ({
+            Region: d.Region,
+            Indicator: d.Indicator ? d.Indicator.trim().replace(/^"|"$/g, '') : '',
+            Year: d.Year,
+            Value: d.Value ? parseFloat(d.Value.replace(/,/g, '')) : null
+        })).then(data => {
+            waterData = data.filter(d => d.Value !== null);
+            updateAll();
+        }).catch(error => {
+            console.error("Error loading CSV data:", error);
+        });
+    </script>
 </body>
 </html>
