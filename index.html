@@ -858,7 +858,7 @@
                 summaryData = {
                     totalConsumption: relevantData.find(d => d.Indicator.toLowerCase() === "total water consumption")?.Value || 0,
                     industryUse: relevantData.find(d => d.Indicator.toLowerCase() === "total water use by industry without utilities")?.Value || 0,
-                    utilitiesUse: relevantData.find(d => d.Indicator.toLowerCase() === "total water use with utilities")?.Value || 0, // Corrected
+                    utilitiesUse: relevantData.find(d => d.Indicator.toLowerCase() === "utilities")?.Value || 0, // Corrected
                     householdUse: relevantData.find(d => d.Indicator.toLowerCase() === "total water use by households")?.Value || 0
                 };
 
@@ -866,34 +866,35 @@
             }
 
             function updateSummaryCards() {
-                const summaryCardsContainer = document.getElementById('summaryCards');
-                summaryCardsContainer.innerHTML = '';
+    const summaryCardsContainer = document.getElementById('summaryCards');
+    summaryCardsContainer.innerHTML = '';
 
-                const categories = [
-                    { title: "Total Water Use", value: summaryData.totalConsumption, icon: "water_drop", category: "Total water use with utilities" },
-                    { title: "Total Industry Use", value: summaryData.industryUse, icon: "business", category: "Total water use by industry without utilities" },
-                    { title: "Utilities Use", value: summaryData.utilitiesUse, icon: "build", category: "Total water use with utilities" }, // Corrected
-                    { title: "Household Use", value: summaryData.householdUse, icon: "home", category: "Total water use by households" }
-                ];
+    const categories = [
+        { title: "Total Water Use", value: summaryData.totalConsumption, icon: "water_drop", category: "Total water use with utilities" },
+        { title: "Total Industry Use", value: summaryData.industryUse, icon: "business", category: "Total water use by industry without utilities" },
+        { title: "Utilities Use", value: summaryData.utilitiesUse, icon: "build", category: "utilities" }, // Updated
+        { title: "Household Use", value: summaryData.householdUse, icon: "home", category: "Total water use by households" }
+    ];
 
-                categories.forEach((item) => {
-                    const card = document.createElement('div');
-                    card.className = `bg-white shadow-md cursor-pointer transition-all p-4 rounded-lg w-full ${selectedCategory.toLowerCase() === item.category.toLowerCase() ? 'ring-2 ring-blue-500' : ''}`;
-                    card.onclick = () => handleCategoryChange(item.category);
-                    card.innerHTML = `
-                        <div class="flex items-center justify-between">
-                            <div>
-                                <p class="text-sm text-gray-500">${item.title}</p>
-                                <p class="text-2xl font-bold">${item.value.toLocaleString()} ML</p>
-                            </div>
-                            <div class="${selectedCategory.toLowerCase() === item.category.toLowerCase() ? 'text-blue-500' : 'text-gray-400'}">
-                                <span class="material-icons" style="font-size: 36px;">${item.icon}</span>
-                            </div>
-                        </div>
-                    `;
-                    summaryCardsContainer.appendChild(card);
-                });
-            }
+    categories.forEach((item) => {
+        const card = document.createElement('div');
+        card.className = `bg-white shadow-md cursor-pointer transition-all p-4 rounded-lg w-full ${selectedCategory.toLowerCase() === item.category.toLowerCase() ? 'ring-2 ring-blue-500' : ''}`;
+        card.onclick = () => handleCategoryChange(item.category);
+        card.innerHTML = `
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm text-gray-500">${item.title}</p>
+                    <p class="text-2xl font-bold">${item.value.toLocaleString()} ML</p>
+                </div>
+                <div class="${selectedCategory.toLowerCase() === item.category.toLowerCase() ? 'text-blue-500' : 'text-gray-400'}">
+                    <span class="material-icons" style="font-size: 36px;">${item.icon}</span>
+                </div>
+            </div>
+        `;
+        summaryCardsContainer.appendChild(card);
+    });
+}
+
 
             function handleYearChange(event) {
                 const year = parseInt(event.target.value);
