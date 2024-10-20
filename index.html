@@ -196,12 +196,12 @@
 
             <!-- Right Section: Details and Charts -->
             <div class="w-full lg:w-2/5 bg-white p-4 shadow-md rounded-lg">
-                <h2 class="text-2xl font-bold mb-4" id="dynamicSubtitle"></h2>
-                <p class="mb-4" id="dynamicParagraph"></p>
+                <h2 class="text-2xl font-bold mb-4" id="dynamicSubtitle" style="margin-left: 10px;" ></h2>
+                <p class="mb-4" id="dynamicParagraph" style="margin-left: 10px;"></p>
                 <div id="isotypechart" class="w-full h-[120px] mb-6"></div>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                        <h3 class="text-lg font-semibold mb-2">Per Capita Water Use</h3>
+                        <h3 class="text-lg font-semibold mb-2" style="margin-left: 12px;">Per Capita Water Use</h3>
                         <div data-chart="per-capita" class="w-full h-[200px]"></div>
                     </div>
                     <div>
@@ -210,7 +210,7 @@
                     </div>
                 </div>
                 <!-- Shared Legend -->
-                <div id="donutLegend" class="mt-4 p-2 rounded-lg shadow-md">
+                <div id="donutLegend" class="mt-4 p-2 rounded-lg shadow-md" style="margin-left: 5px ;">
                     <!-- Legend will be dynamically inserted here -->
                 </div>
             </div>
@@ -224,7 +224,7 @@
                     <!-- Efficiency Metric Card -->
                     <div class="bg-white/10 backdrop-blur-lg border-none text-white hover:bg-white/20 transition-all duration-300 rounded-lg overflow-hidden">
                         <div class="p-6">
-                            <div class="chart-title">Water Consumption vs. Water Use</div>
+                            <div class="chart-title">Water Consumption vs. Water Use in Australia</div>
                             <div class="bg-white p-6 rounded-lg shadow-md">
                                 <div class="chart-container" id="efficiencyLineChart"></div>
                             </div>
@@ -299,9 +299,9 @@
 
         <!-- Footer -->
         <div class="w-full bg-indigo-700 text-white p-4 text-center mt-8">
-            <span>Laurentius Hartojo</span><br>
-            <span>Last Modified: 19/10/2024</span><br>
-            <span>Data source: Australia Bureau Statistic</span><br>
+            <span class="text-sm">Laurentius Hartojo</span><br>
+            <span class="text-sm">Last Modified: 19/10/2024</span><br>
+            <span class="text-sm">Data source: Australia Bureau Statistic</span><br>
         </div>
 
         <script>
@@ -377,7 +377,7 @@
                 const lineChartSpec = {
                     $schema: "https://vega.github.io/schema/vega-lite/v5.json",
                     width: "container",
-                    height: 250,
+                    height: 290,
                     data: { values: pivotedData },
                     encoding: {
                         x: { 
@@ -394,9 +394,10 @@
                             } 
                         }
                     },
+                    
                     layer: [
                         {
-                            mark: { type: "area", color: "#a1c4fd", opacity: 0.5 },
+                            mark: { type: "area", color: "#a1c4fd", opacity: 0.7 },
                             encoding: {
                                 y: { 
                                     field: "Utilities", 
@@ -407,14 +408,26 @@
                                 y2: { field: "Consumption" },
                                 tooltip: [
                                     { field: "Year", type: "nominal", title: "Year" },
-                                    { field: "Consumption", type: "quantitative", title: "Total Consumption (ML)", format: "," },
-                                    { field: "Utilities", type: "quantitative", title: "Total Water Use (ML)", format: "," },
                                     { field: "WaterSaved", type: "quantitative", title: "Water Returned to Environment (ML)", format: "," }
                                 ]
                             }
                         },
                         {
-                            mark: { type: "line", point: true, strokeWidth: 2 },
+                        mark: { type: "point", size: 90, stroke: "orange", strokeWidth: 2, filled: false },
+                        encoding: {
+                            y: { field: "Consumption", type: "quantitative" },
+                            color: { value: "#4e79a7" },
+                        }
+                        },
+                        {
+                        mark: { type: "point", size: 90, stroke: "steelblue", strokeWidth: 2, filled: false },
+                        encoding: {
+                            y: { field: "Utilities", type: "quantitative" },
+                            color: { value: "#f28e2c" },
+                        }
+                        },
+                        {
+                            mark: { type: "line", stroke: "steelblue",point: true, strokeWidth: 2 },
                             encoding: {
                                 y: { field: "Consumption", type: "quantitative" },
                                 color: { value: "#4e79a7" },
@@ -425,6 +438,24 @@
                                 ]
                             }
                         },
+                        {
+                            mark: {
+                                type: "text",
+                                align: "center",
+                                baseline: "bottom",
+                                fontSize: 11,
+                                font: "Roboto", 
+                                color:"grey",
+                                fontWeight: "italic",
+                                opacity: 0.7
+                            },
+                            encoding: {
+                                x: { "value": 200 },    // Half of chart width (600/2) to center horizontally
+                                y: { "value": 0 },     // 10 pixels from the top
+                                text: { "value": "Click point to adjust the year of the bar chart" } 
+                            }
+                        },
+                        
                         {
                             mark: { type: "line", point: true, strokeWidth: 2 },
                             encoding: {
@@ -476,6 +507,7 @@
                         mark: {
                             type: 'rule',
                             color: 'red',
+                            strokeDash: [5,5] ,
                             strokeWidth: 2
                         },
                         encoding: {
@@ -563,61 +595,105 @@
 
                 // Bar Chart Specification with Improved Design
                 const barChartSpec = {
-                    $schema: "https://vega.github.io/schema/vega-lite/v5.json",
-                    width: "container",
-                    height: 300,
-                    data: { values: finalData },
-                    mark: "bar",
-                    encoding: {
-                        x: {
-                            field: "State",
-                            type: "nominal",
-                            title: null, // Removed x-axis title
-                            sort: Object.keys(stateColors), // Ensure consistent order
-                            axis: {
-                                labels: false, // Remove x-axis labels
-                                ticks: false, // Remove x-axis ticks
-                                domain: false // Remove x-axis domain line
-                            }
-                        },
-                        y: {
-                            field: "Difference",
-                            type: "quantitative",
-                            title: "Water Returned to Environment (ML)",
-                            axis: {
-                                labelFontSize: 12,
-                                titleFontSize: 14,
-                                labelFont: "Roboto",
-                                titleFont: "Roboto",
-                                grid: false // Remove horizontal grid lines
-                            }
-                        },
-                        color: {
-                            field: "State",
-                            type: "nominal",
-                            scale: {
-                                domain: Object.keys(stateColors),
-                                range: Object.values(stateColors)
-                            },
-                            legend: null // Removed Vega-Lite legend
-                        },
-                        tooltip: [
-                            { field: "State", type: "nominal", title: "State" },
-                            { field: "Difference", type: "quantitative", title: "Water Returned to Environment (ML)", format: "," }
-                        ]
-                    },
-                    config: {
-                        axis: {
-                            labelFontSize: 12,
-                            titleFontSize: 14,
-                            labelFont: "Roboto",
-                            titleFont: "Roboto"
-                        }
-                    }
-                };
-
-                vegaEmbed('#efficiencyBarChart', barChartSpec, {actions: false}).catch(console.error);
+      $schema: "https://vega.github.io/schema/vega-lite/v5.json",
+      width: "container",
+      height: 300,
+      data: { values: finalData },
+      layer: [
+        {
+          mark: "bar",
+          encoding: {
+            x: {
+              field: "State",
+              type: "nominal",
+              title: null,
+              sort: Object.keys(stateColors),
+              axis: {
+                labels: false,
+                ticks: false,
+                domain: false
+              }
+            },
+            y: {
+              field: "Difference",
+              type: "quantitative",
+              title: "Water Returned to Environment (ML)",
+              axis: {
+                labelFontSize: 12,
+                titleFontSize: 14,
+                labelFont: "Roboto",
+                titleFont: "Roboto",
+                grid: false
+              }
+            },
+            color: {
+              field: "State",
+              type: "nominal",
+              scale: {
+                domain: Object.keys(stateColors),
+                range: Object.values(stateColors)
+              },
+              legend: null
+            },
+            tooltip: [
+              { field: "State", type: "nominal", title: "State" },
+              { field: "Difference", type: "quantitative", title: "Water Returned to Environment (ML)", format: "," }
+            ]
+          }
+        },
+        {
+          mark: {
+            type: "rect",
+            stroke: "steelblue",
+            strokeWidth: 3,
+            fill: null
+          },
+          encoding: {
+            x: { field: "State", type: "nominal" },
+            y: { field: "Difference", type: "quantitative" },
+            opacity: {
+              condition: { test: "datum.State === 'Tasmania'", value: 1 },
+              value: 0
             }
+          }
+        },
+        {
+          mark: {
+            type: "text",
+            align: "center",
+            baseline: "bottom",
+            dy: -5,
+            fontSize: 11,
+            fontStyle: "italic"
+          },
+          encoding: {
+            x: { field: "State", type: "nominal" },
+            y: { field: "Difference", type: "quantitative" },
+            text: {
+              condition: {
+                test: "datum.State === 'Tasmania'",
+                value: "Tasmania show Efficient water reuse and recycling"
+              }
+            },
+            opacity: {
+              condition: { test: "datum.State === 'Tasmania'", value: 1 },
+              value: 0
+            }
+          }
+        }
+      ],
+      config: {
+        axis: {
+          labelFontSize: 12,
+          titleFontSize: 14,
+          labelFont: "Roboto",
+          titleFont: "Roboto"
+        }
+      }
+    };
+
+    vegaEmbed('#efficiencyBarChart', barChartSpec, {actions: false}).catch(console.error);
+  }
 
             function updateBarChartTitle(year) {
                 const barChartTitle = document.getElementById('barChartTitle');
@@ -938,14 +1014,13 @@
                                 type: "text",
                                 align: "left",
                                 dy: -30,
-                                baseline: "middle",
                                 fontSize: 16,
-                                fontWeight: "bold"
                             },
                             encoding: {
                                 x: {value: 15},
                                 y: {value: 50},
                                 text: {value: "Population"},
+                                textFont: "Roboto",
                                 color: {value: "black"}
                             }
                         },
@@ -956,7 +1031,6 @@
                                 dy: -30,
                                 baseline: "middle",
                                 fontSize: 16,
-                                fontWeight: "bold"
                             },
                             encoding: {
                                 x: {value: 440},
@@ -1244,147 +1318,226 @@
 
             // Function to create the Water Extraction and Return Flow Chart
             function createWaterExtractionChart() {
-    const waterExtractionSpec = {
-        "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
-        "description": "Water use data pyramid converted from Gigalitres (GL) to Megalitres (ML).",
-        "data": {
-            "url": "https://raw.githubusercontent.com/Lhart0050/population-density-map/refs/heads/Assignment/water-return-flow.csv",
-            "format": { "type": "csv" }
-        },
-        "autosize": {
-            "type": "fit",
-            "contains": "padding"
-        },
-        "hconcat": [
-            {
-                "width": 450,
-                "height": 300,
-                "transform": [
-                    { "filter": "datum['Flow Type'] == 'Self-extracted (GL)'" },
-                    { "calculate": "datum['Value (GL)'] / 1000", "as": "Value_ML" }  // Use positive value
-                ],
-                "title": "Self-extracted (ML)",
-                "mark": { "type": "bar", "tooltip": true },
-                "encoding": {
-                    "y": {
-                        "field": "Source",
-                        "type": "ordinal",
-                        "axis": null,
-                        "sort": "descending",
-                        "title": null
-                    },
-                    "x": {
-                        "aggregate": "sum",
-                        "field": "Value_ML",
-                        "type": "quantitative",
-                        "scale": { "reverse": true },  // Reverse the x-axis scale
-                        "axis": {
-                            "format": ".3s",
-                            "title": "Value (ML)",
-                            "titlePadding": 10,
-                            "labelFontSize": 12,
-                            "titleFontSize": 14,
-                            "labelFont": "Roboto",
-                            "titleFont": "Roboto"
-                        }
-                    },
-                    "color": {
-                        "field": "Flow Type",
-                        "legend": null,
-                        "scale": { "range": ["#084a90"] }
-                    },
-                    "text": {
-                        "aggregate": "sum",
-                        "field": "Value_ML",  // Use positive value for text
-                        "type": "quantitative",
-                        "format": ".3s"
-                    },
-                    "tooltip": [
-                        { "field": "Source", "type": "nominal", "title": "Source" },
-                        { "field": "Value_ML", "type": "quantitative", "title": "Value (ML)", "format": ",.2f" }  // Use positive value for tooltip
-                    ]
-                }
-            },
-            {
-                "width": 100,
-                "height": 300,
-                "view": { "stroke": null },
-                "mark": {
-                    "type": "text",
-                    "align": "center",
-                    "baseline": "middle"
-                },
-                "encoding": {
-                    "y": {
-                        "field": "Source",
-                        "type": "ordinal",
-                        "axis": null,
-                        "sort": "descending"
-                    },
-                    "text": { "field": "Source", "type": "nominal" }
-                }
-            },
-            {
-                "width": 450,
-                "height": 300,
-                "transform": [
-                    { "filter": "datum['Flow Type'] == 'Return flows (GL)'" },
-                    { "calculate": "datum['Value (GL)'] / 1000", "as": "Value_ML" }
-                ],
-                "title": "Return Flows (ML)",
-                "mark": { "type": "bar", "tooltip": true },
-                "encoding": {
-                    "y": {
-                        "field": "Source",
-                        "type": "ordinal",
-                        "axis": null,
-                        "sort": "descending",
-                        "title": null
-                    },
-                    "x": {
-                        "aggregate": "sum",
-                        "field": "Value_ML",
-                        "type": "quantitative",
-                        "axis": {
-                            "format": ".3s",
-                            "title": "Value (ML)",
-                            "titlePadding": 10,
-                            "labelFontSize": 12,
-                            "titleFontSize": 14,
-                            "labelFont": "Roboto",
-                            "titleFont": "Roboto"
-                        }
-                    },
-                    "color": {
-                        "field": "Flow Type",
-                        "legend": null,
-                        "scale": { "range": ["#3c8ac2"] }
-                    },
-                    "text": {
-                        "aggregate": "sum",
-                        "field": "Value_ML",
-                        "type": "quantitative",
-                        "format": ".3s"
-                    },
-                    "tooltip": [
-                        { "field": "Source", "type": "nominal", "title": "Source" },
-                        { "field": "Value_ML", "type": "quantitative", "title": "Value (ML)", "format": ",.2f" }
-                    ]
-                }
-            }
+  const waterExtractionSpec = {
+    "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+    "description": "Water use data pyramid converted from Gigalitres (GL) to Megalitres (ML).",
+    "data": {
+      "url": "https://raw.githubusercontent.com/Lhart0050/population-density-map/refs/heads/Assignment/water-return-flow.csv",
+      "format": { "type": "csv" }
+    },
+    "autosize": {
+      "type": "fit",
+      "contains": "padding"
+    },
+    "hconcat": [
+      {
+        "width": 450,
+        "height": 300,
+        "transform": [
+          { "filter": "datum['Flow Type'] == 'Self-extracted (GL)'" },
+          { "calculate": "datum['Value (GL)'] / 1000", "as": "Value_ML" }
         ],
-        "config": {
-            "view": { "stroke": null },
-            "axis": { "grid": false },
-            "style": {
-                "guide-title": { "fontSize": 14, "font": "Roboto" },
-                "guide-label": { "fontSize": 12, "font": "Roboto" },
-                "title": { "fontSize": 16, "font": "Roboto", "fontWeight": "bold" }
+        "title": "Self-extracted (ML)",
+        "layer": [
+          {
+            "mark": { "type": "bar", "tooltip": true },
+            "encoding": {
+              "y": {
+                "field": "Source",
+                "type": "ordinal",
+                "axis": null,
+                "sort": "descending",
+                "title": null
+              },
+              "x": {
+                "aggregate": "sum",
+                "field": "Value_ML",
+                "type": "quantitative",
+                "scale": { "reverse": true },
+                "axis": {
+                  "format": ".3s",
+                  "title": "Value (ML)",
+                  "titlePadding": 10,
+                  "labelFontSize": 12,
+                  "titleFontSize": 14,
+                  "labelFont": "Roboto",
+                  "titleFont": "Roboto"
+                }
+              },
+              "color": {
+                "field": "Flow Type",
+                "legend": null,
+                "scale": { "range": ["#084a90"] }
+              },
+              "text": {
+                "aggregate": "sum",
+                "field": "Value_ML",
+                "type": "quantitative",
+                "format": ".3s"
+              },
+              "tooltip": [
+                { "field": "Source", "type": "nominal", "title": "Source" },
+                { "field": "Value_ML", "type": "quantitative", "title": "Value (ML)", "format": ",.2f" }
+              ]
             }
+          },
+          {
+            "mark": { "type": "bar", "color": "transparent", "stroke": "orange", "strokeWidth": 2 },
+            "encoding": {
+              "y": {
+                "field": "Source",
+                "type": "ordinal",
+                "axis": null,
+                "sort": "descending"
+              },
+              "x": {
+                "aggregate": "sum",
+                "field": "Value_ML",
+                "type": "quantitative",
+                "scale": { "reverse": true }
+              },
+              "opacity": {
+                "condition": {
+                  "test": "datum.Source == 'Groundwater'",
+                  "value": 1
+                },
+                "value": 0
+              }
+            }
+          }
+        ]
+      },
+      {
+        "width": 100,
+        "height": 300,
+        "view": { "stroke": null },
+        "mark": {
+          "type": "text",
+          "align": "center",
+          "baseline": "middle"
+        },
+        "encoding": {
+          "y": {
+            "field": "Source",
+            "type": "ordinal",
+            "axis": null,
+            "sort": "descending"
+          },
+          "text": { "field": "Source", "type": "nominal" }
         }
-    };
+      },
+      {
+        "width": 450,
+        "height": 300,
+        "transform": [
+          { "filter": "datum['Flow Type'] == 'Return flows (GL)'" },
+          { "calculate": "datum['Value (GL)'] / 1000", "as": "Value_ML" }
+        ],
+        "title": "Return Flows (ML)",
+        "layer": [
+          {
+            "mark": { "type": "bar", "tooltip": true },
+            "encoding": {
+              "y": {
+                "field": "Source",
+                "type": "ordinal",
+                "axis": null,
+                "sort": "descending",
+                "title": null
+              },
+              "x": {
+                "aggregate": "sum",
+                "field": "Value_ML",
+                "type": "quantitative",
+                "axis": {
+                  "format": ".3s",
+                  "title": "Value (ML)",
+                  "titlePadding": 10,
+                  "labelFontSize": 12,
+                  "titleFontSize": 14,
+                  "labelFont": "Roboto",
+                  "titleFont": "Roboto"
+                }
+              },
+              "color": {
+                "field": "Flow Type",
+                "legend": null,
+                "scale": { "range": ["#3c8ac2"] }
+              },
+              "text": {
+                "aggregate": "sum",
+                "field": "Value_ML",
+                "type": "quantitative",
+                "format": ".3s"
+              },
+              "tooltip": [
+                { "field": "Source", "type": "nominal", "title": "Source" },
+                { "field": "Value_ML", "type": "quantitative", "title": "Value (ML)", "format": ",.2f" }
+              ]
+            }
+          },
+          {
+            "mark": { "type": "bar", "color": "transparent", "stroke": "orange", "strokeWidth": 2 },
+            "encoding": {
+              "y": {
+                "field": "Source",
+                "type": "ordinal",
+                "axis": null,
+                "sort": "descending"
+              },
+              "x": {
+                "aggregate": "sum",
+                "field": "Value_ML",
+                "type": "quantitative"
+              },
+              "opacity": {
+                "condition": {
+                  "test": "datum.Source == 'Groundwater'",
+                  "value": 1
+                },
+                "value": 0
+              }
+            }
+          },
+          {
+            "mark": {
+              "type": "text",
+              "align": "left",
+              "baseline": "middle",
+              "dx": 5,
+              "fontSize": 11,
+              "fontStyle": "italic"
+            },
+            "encoding": {
+              "y": {
+                "field": "Source",
+                "type": "ordinal",
+                "sort": "descending"
+              },
+              "text": {
+                "condition": {
+                  "test": "datum.Source == 'Groundwater'",
+                  "value": "Small return flow due to various processes"
+                }
+              },
+              "color": {"value": "#666"}
+            }
+          }
+        ]
+      }
+    ],
+    "config": {
+      "view": { "stroke": null },
+      "axis": { "grid": false },
+      "style": {
+        "guide-title": { "fontSize": 14, "font": "Roboto" },
+        "guide-label": { "fontSize": 12, "font": "Roboto" },
+        "title": { "fontSize": 16, "font": "Roboto", "fontWeight": "bold" }
+      }
+    }
+  };
 
-    vegaEmbed('#waterExtractionChart', waterExtractionSpec, { actions: false }).catch(console.error);
+  vegaEmbed('#waterExtractionChart', waterExtractionSpec, { actions: false }).catch(console.error);
 }
 
         </script>
