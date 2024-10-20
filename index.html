@@ -1338,7 +1338,8 @@
         "title": "Self-extracted (ML)",
         "layer": [
           {
-            "mark": { "type": "bar", "tooltip": true },
+            // Main bar chart with conditional stroke for annotations
+            "mark": { "type": "bar", "tooltip": true, "cursor": "pointer" },
             "encoding": {
               "y": {
                 "field": "Source",
@@ -1367,37 +1368,21 @@
                 "legend": null,
                 "scale": { "range": ["#084a90"] }
               },
-              "text": {
-                "aggregate": "sum",
-                "field": "Value_ML",
-                "type": "quantitative",
-                "format": ".3s"
-              },
               "tooltip": [
                 { "field": "Source", "type": "nominal", "title": "Source" },
                 { "field": "Value_ML", "type": "quantitative", "title": "Value (ML)", "format": ",.2f" }
-              ]
-            }
-          },
-          {
-            "mark": { "type": "bar", "color": "transparent", "stroke": "orange", "strokeWidth": 2 },
-            "encoding": {
-              "y": {
-                "field": "Source",
-                "type": "ordinal",
-                "axis": null,
-                "sort": "descending"
-              },
-              "x": {
-                "aggregate": "sum",
-                "field": "Value_ML",
-                "type": "quantitative",
-                "scale": { "reverse": true }
-              },
-              "opacity": {
+              ],
+              "stroke": {
                 "condition": {
                   "test": "datum.Source == 'Groundwater'",
-                  "value": 1
+                  "value": "orange"
+                },
+                "value": "transparent"
+              },
+              "strokeWidth": {
+                "condition": {
+                  "test": "datum.Source == 'Groundwater'",
+                  "value": 2
                 },
                 "value": 0
               }
@@ -1434,7 +1419,8 @@
         "title": "Return Flows (ML)",
         "layer": [
           {
-            "mark": { "type": "bar", "tooltip": true },
+            // Main bar chart with conditional stroke for annotations
+            "mark": { "type": "bar", "tooltip": true, "cursor": "pointer" },
             "encoding": {
               "y": {
                 "field": "Source",
@@ -1462,63 +1448,24 @@
                 "legend": null,
                 "scale": { "range": ["#3c8ac2"] }
               },
-              "text": {
-                "aggregate": "sum",
-                "field": "Value_ML",
-                "type": "quantitative",
-                "format": ".3s"
-              },
               "tooltip": [
                 { "field": "Source", "type": "nominal", "title": "Source" },
                 { "field": "Value_ML", "type": "quantitative", "title": "Value (ML)", "format": ",.2f" }
-              ]
-            }
-          },
-          {
-            "mark": { "type": "bar", "color": "transparent", "stroke": "orange", "strokeWidth": 2 },
-            "encoding": {
-              "y": {
-                "field": "Source",
-                "type": "ordinal",
-                "axis": null,
-                "sort": "descending"
-              },
-              "x": {
-                "aggregate": "sum",
-                "field": "Value_ML",
-                "type": "quantitative"
-              },
-              "opacity": {
+              ],
+              "stroke": {
                 "condition": {
                   "test": "datum.Source == 'Groundwater'",
-                  "value": 1
+                  "value": "orange"
+                },
+                "value": "transparent"
+              },
+              "strokeWidth": {
+                "condition": {
+                  "test": "datum.Source == 'Groundwater'",
+                  "value": 2
                 },
                 "value": 0
               }
-            }
-          },
-          {
-            "mark": {
-              "type": "text",
-              "align": "left",
-              "baseline": "middle",
-              "dx": 5,
-              "fontSize": 11,
-              "fontStyle": "italic"
-            },
-            "encoding": {
-              "y": {
-                "field": "Source",
-                "type": "ordinal",
-                "sort": "descending"
-              },
-              "text": {
-                "condition": {
-                  "test": "datum.Source == 'Groundwater'",
-                  "value": "Small return flow due to various processes"
-                }
-              },
-              "color": {"value": "#666"}
             }
           }
         ]
