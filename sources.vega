@@ -1,97 +1,119 @@
 {
-    "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
-    "description": "Normalized Line Chart with Filters and Dynamic Title",
-    "width": 800,
-    "height": 450,
-    "data": {
-      "url": "https://raw.githubusercontent.com/Lhart0050/population-density-map/main/reshaped_data.csv",
-      "format": {"type": "csv"}
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "description": "Heatmap of Water Consumption by Region and Year",
+  "width": 800,
+  "height": 600,
+  "autosize": {
+    "type": "pad",
+    "contains": "padding"
+  },
+  "data": {
+    "url": "https://raw.githubusercontent.com/Lhart0050/population-density-map/main/reshaped_data.csv",
+    "format": {
+      "type": "csv"
+    }
+  },
+  "transform": [
+    {
+      "calculate": "toNumber(datum.Value)",
+      "as": "Value"
     },
-    "transform": [
-      {
-        "calculate": "toNumber(datum.Value)",
-        "as": "Value"
-      },
-      {
-        "filter": "datum.Indicator == IndicatorSelect"
-      },
-      {
-        "filter": "RegionSelect == 'All States' || indexof(RegionSelect, datum.Region) >= 0"
-      }
-    ],
-    "params": [
-      {
-        "name": "IndicatorSelect",
-        "value": "Area-average rainfall ",
-        "bind": {
-          "input": "select",
-          "options": [
-            "Area-average rainfall ",
-            "Accessible volume in major dam storages as of June 30 "
-          ],
-          "name": "Select Indicator: "
-        }
-      },
-      {
-        "name": "RegionSelect",
-        "value": "All States",
-        "bind": {
-          "input": "select",
-          "options": [
-            "All States",
-            "New South Wales",
-            "Victoria",
-            "Queensland",
-            "South Australia",
-            "Western Australia",
-            "Tasmania",
-            "Northern Territory",
-            "Australian Capital Territory"
-          ],
-          "name": "Select Region: ",
-          "multiple": true
-        }
-      }
-    ],
-    "layer": [
-      {
-        "mark": "line",
-        "encoding": {
-          "x": {"field": "Year", "type": "ordinal", "title": "Year"},
-          "y": {"field": "Value", "type": "quantitative", "title": "Value"},
-          "color": {"field": "Region", "type": "nominal", "title": "Region"}
-        }
-      },
-      {
-        "mark": "point",
-        "encoding": {
-          "x": {"field": "Year", "type": "ordinal"},
-          "y": {"field": "Value", "type": "quantitative"},
-          "tooltip": [
-            {"field": "Region", "type": "nominal"},
-            {"field": "Indicator", "type": "nominal"},
-            {"field": "Year", "type": "ordinal"},
-            {"field": "Value", "type": "quantitative", "title": "Value"}
+    {
+      "filter": "datum.Indicator == IndicatorSelect"
+    },
+    {
+      "lookup": "Region",
+      "from": {
+        "data": {
+          "values": [
+            { "Region": "New South Wales", "RegionAlias": "NSW" },
+            { "Region": "Victoria", "RegionAlias": "VIC" },
+            { "Region": "Queensland", "RegionAlias": "QLD" },
+            { "Region": "Western Australia", "RegionAlias": "WA" },
+            { "Region": "South Australia", "RegionAlias": "SA" },
+            { "Region": "Tasmania", "RegionAlias": "TAS" },
+            { "Region": "Australian Capital Territory", "RegionAlias": "ACT" },
+            { "Region": "Northern Territory", "RegionAlias": "NT" }
           ]
-        }
+        },
+        "key": "Region",
+        "fields": ["RegionAlias"]
+      },
+      "default": "Other"
+    }
+  ],
+  "params": [
+    {
+      "name": "IndicatorSelect",
+      "value": "Area-average rainfall ",
+      "bind": {
+        "input": "select",
+        "options": [
+          "Area-average rainfall ",
+          "Accessible volume in major dam storages as of June 30 "
+        ],
+        "name": "Select Indicator: "
+      }
+    }
+  ],
+  "mark": "rect",
+  "encoding": {
+    "x": {
+      "field": "Year",
+      "type": "ordinal",
+      "title": "Year",
+      "axis": {
+        "labelAngle": 0
+      }
+    },
+    "y": {
+      "field": "RegionAlias",
+      "type": "nominal",
+      "title": "Region"
+    },
+    "color": {
+      "field": "Value",
+      "type": "quantitative",
+      "title": "Water Usage (ML)",
+      "scale": {
+        "scheme": "blues"
+      },
+      "legend": {
+        "orient": "bottom",
+        "titleFontSize": 14,
+        "labelFontSize": 12
+      }
+    },
+    "tooltip": [
+      {
+        "field": "RegionAlias",
+        "type": "nominal",
+        "title": "Region"
       },
       {
-        "mark": {
-          "type": "text",
-          "align": "center",
-          "fontSize": 18,
-          "fontWeight": "bold",
-          "color": "black"
-        },
-        "encoding": {
-          "text": {
-            "signal": "'Water Sources by ' + IndicatorSelect + ' in ' + (RegionSelect == 'All States' ? 'All States' : RegionSelect.join(', ')) + ' Yearly'"
-          },
-          "x": {"signal": "width / 2"},
-          "y": {"value": -20}  
-        }
+        "field": "Indicator",
+        "type": "nominal"
+      },
+      {
+        "field": "Year",
+        "type": "ordinal"
+      },
+      {
+        "field": "Value",
+        "type": "quantitative",
+        "title": "Value"
       }
     ]
+  },
+  "config": {
+    "axis": {
+      "labelFontSize": 12,
+      "titleFontSize": 14
+    },
+    "legend": {
+      "labelFontSize": 12,
+      "titleFontSize": 14
+    }
   }
-  
-  
+}
+

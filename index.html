@@ -32,7 +32,7 @@
             width: 25px;
             height: 25px;
             border-radius: 50%;
-            background: #4CAF50;
+            background: #3c2ac4;
             cursor: pointer;
         }
 
@@ -44,7 +44,6 @@
             cursor: pointer;
         }
 
-        /* Ensure the shared legend has a white background and compact layout */
         #donutLegend {
             background-color: white;
             padding: 10px;
@@ -148,6 +147,11 @@
             font-weight: 600;
             margin-bottom: 0.5rem;
         }
+
+        /* New Font Styling for Efficiency Section */
+        .efficiency-section * {
+            font-family: 'Roboto', sans-serif;
+        }
     </style>
 </head>
 <body class="bg-gray-100">
@@ -200,31 +204,94 @@
             </div>
         </div>
 
-        <!-- New Section: Is it Efficient? -->
+        <!-- Updated Section: Is it Efficient? -->
         <div class="efficiency-section w-full rounded-lg">
             <div class="efficiency-content max-w-7xl mx-auto">
-                <h2 class="text-3xl font-bold mb-6">Is it Efficient?</h2>
-                <div class="flex flex-col md:flex-row gap-6">
-                    <!-- Line Chart Container -->
-                    <div class="w-full md:w-1/2">
-                        <div class="chart-title">Water Consumption Trends</div>
-                        <div class="bg-white p-6 rounded-lg shadow-md">
-                            <div class="chart-container" id="efficiencyLineChart"></div>
+                <h2 class="text-4xl font-bold mb-8 text-white text-center">Is it Efficient?</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <!-- New Efficiency Metric Card -->
+                    <div class="bg-white/10 backdrop-blur-lg border-none text-white hover:bg-white/20 transition-all duration-300 rounded-lg overflow-hidden">
+                        <div class="p-6">
+                            <div class="chart-title">Water Consumption Trends</div>
+                            <div class="bg-white p-6 rounded-lg shadow-md">
+                                <div class="chart-container" id="efficiencyLineChart"></div>
+                            </div>
+                            <p class="chart-description mt-4">
+                                This line chart displays the total water consumption and total water use with utilities over the years.
+                            </p>
                         </div>
-                        <p class="chart-description mt-4">
-                            This line chart displays the total water consumption and total water use with utilities over the years.
-                        </p>
                     </div>
-                    <!-- Difference Bar Chart Container -->
-                    <div class="w-full md:w-1/2">
-                        <div class="chart-title" id="barChartTitle">Total Water Returned to Earth for 2020-21</div>
-                        <div class="bg-white p-6 rounded-lg shadow-md">
-                            <div id="efficiencyBarChart"></div>
-                            <!-- Custom Legend Removed -->
+
+                    <!-- Improvement Strategies Card -->
+                    <div class="bg-white/10 backdrop-blur-lg border-none text-white hover:bg-white/20 transition-all duration-300 rounded-lg overflow-hidden">
+                        <div class="p-6">
+                            <div class="chart-title" id="barChartTitle">Total Water Returned to Earth for 2020-21</div>
+                            <div class="bg-white p-6 rounded-lg shadow-md">
+                                <div id="efficiencyBarChart"></div>
+                            </div>
+                            <p class="chart-description mt-4">
+                                This bar chart shows the total water returned to Earth for each state in the fiscal year 2020-21.
+                            </p>
                         </div>
-                        <p class="chart-description mt-4">
-                            This bar chart shows the total water returned to Earth for each state in the fiscal year 2020-21.
-                        </p>
+                    </div>
+                </div>
+
+                <!-- New Water Section -->
+                <div class="mt-12 bg-white/5 backdrop-blur-sm rounded-lg p-6 text-white relative">
+                    <h3 class="text-2xl font-semibold mb-4 flex items-center cursor-pointer" onclick="toggleDropdown()">
+                        <span id="indicatorTitle">Area average rainfall</span>
+                        <svg class="ml-2 w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                        </svg>
+                    </h3>
+                    <div id="indicatorDropdown" class="hidden absolute bg-opacity-90 bg-blue-900 text-white rounded shadow-lg mt-2 z-10">
+                        <ul>
+                            <li class="px-4 py-2 hover:bg-white/10 cursor-pointer" onclick="updateIndicator('Area-average rainfall ', 'Area average rainfall')">Area average rainfall</li>
+                            <li class="px-4 py-2 hover:bg-white/10 cursor-pointer" onclick="updateIndicator('Accessible volume in major dam storages as of June 30 ', 'Accessible volume in major dam storages')">Accessible volume in major dam storages</li>
+                        </ul>
+                    </div>
+                    <div class="bg-white p-6 rounded-lg shadow-md">
+                        <div id="circularHeatmap"></div>
+                    </div>
+                    <p class="mb-4">
+                        Embracing a circular water economy can lead to significant improvements in water efficiency. 
+                        This approach focuses on reducing, reusing, and recycling water throughout its lifecycle.
+                    </p>
+                    <h3 class="text-2xl font-semibold mb-4 flex items-center cursor-pointer" onclick="toggleDropdown()">
+                        <span id="indicatorTitle">Area average rainfall</span>
+                        <svg class="ml-2 w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                        </svg>
+                    </h3>
+                    <div id="indicatorDropdown" class="hidden absolute bg-opacity-90 bg-blue-900 text-white rounded shadow-lg mt-2 z-10">
+                        <ul>
+                            <li class="px-4 py-2 hover:bg-white/10 cursor-pointer" onclick="updateIndicator('Area-average rainfall ', 'Area average rainfall')">Area average rainfall</li>
+                            <li class="px-4 py-2 hover:bg-white/10 cursor-pointer" onclick="updateIndicator('Accessible volume in major dam storages as of June 30 ', 'Accessible volume in major dam storages')">Accessible volume in major dam storages</li>
+                        </ul>
+                    </div>
+                    <div class="bg-white p-6 rounded-lg shadow-md">
+                        <div id="circularHeatmap"></div>
+                    </div>
+                    <p class="mb-4">
+                        Embracing a circular water economy can lead to significant improvements in water efficiency. 
+                        This approach focuses on reducing, reusing, and recycling water throughout its lifecycle.
+                    </p>
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-center">
+                        <div class="bg-white/10 p-4 rounded-lg">
+                            <h4 class="text-lg font-semibold mb-2">Reduce</h4>
+                            <p class="text-3xl font-bold text-blue-300 mb-2">20%</p>
+                            <p class="text-sm">Decrease in water consumption</p>
+                        </div>
+                        <div class="bg-white/10 p-4 rounded-lg">
+                            <h4 class="text-lg font-semibold mb-2">Reuse</h4>
+                            <p class="text-3xl font-bold text-blue-300 mb-2">35%</p>
+                            <p class="text-sm">Increase in water reuse</p>
+                        </div>
+                        <div class="bg-white/10 p-4 rounded-lg">
+                            <h4 class="text-lg font-semibold mb-2">Recycle</h4>
+                            <p class="text-3xl font-bold text-blue-300 mb-2">45%</p>
+                            <p class="text-sm">Boost in water recycling</p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -542,6 +609,7 @@
                     createEfficiencyChart();
                     createDifferenceBarChart("2020-21"); // Create the bar chart with default year
                     updateBarChartTitle("2020-21"); // Set initial bar chart title
+                    createHeatmap(); // Initialize the Heatmap
                 }).catch(error => {
                     console.error("Error loading CSV data:", error);
                     alert("Failed to load water consumption data.");
@@ -866,34 +934,34 @@
             }
 
             function updateSummaryCards() {
-    const summaryCardsContainer = document.getElementById('summaryCards');
-    summaryCardsContainer.innerHTML = '';
+                const summaryCardsContainer = document.getElementById('summaryCards');
+                summaryCardsContainer.innerHTML = '';
 
-    const categories = [
-        { title: "Total Water Use", value: summaryData.totalConsumption, icon: "water_drop", category: "Total water use with utilities" },
-        { title: "Total Industry Use", value: summaryData.industryUse, icon: "business", category: "Total water use by industry without utilities" },
-        { title: "Utilities Use", value: summaryData.utilitiesUse, icon: "build", category: "utilities" }, // Updated
-        { title: "Household Use", value: summaryData.householdUse, icon: "home", category: "Total water use by households" }
-    ];
+                const categories = [
+                    { title: "Total Water Use", value: summaryData.totalConsumption, icon: "water_drop", category: "Total water use with utilities" },
+                    { title: "Total Industry Use", value: summaryData.industryUse, icon: "business", category: "Total water use by industry without utilities" },
+                    { title: "Utilities Use", value: summaryData.utilitiesUse, icon: "build", category: "utilities" }, // Updated
+                    { title: "Household Use", value: summaryData.householdUse, icon: "home", category: "Total water use by households" }
+                ];
 
-    categories.forEach((item) => {
-        const card = document.createElement('div');
-        card.className = `bg-white shadow-md cursor-pointer transition-all p-4 rounded-lg w-full ${selectedCategory.toLowerCase() === item.category.toLowerCase() ? 'ring-2 ring-blue-500' : ''}`;
-        card.onclick = () => handleCategoryChange(item.category);
-        card.innerHTML = `
-            <div class="flex items-center justify-between">
-                <div>
-                    <p class="text-sm text-gray-500">${item.title}</p>
-                    <p class="text-2xl font-bold">${item.value.toLocaleString()} ML</p>
-                </div>
-                <div class="${selectedCategory.toLowerCase() === item.category.toLowerCase() ? 'text-blue-500' : 'text-gray-400'}">
-                    <span class="material-icons" style="font-size: 36px;">${item.icon}</span>
-                </div>
-            </div>
-        `;
-        summaryCardsContainer.appendChild(card);
-    });
-}
+                categories.forEach((item) => {
+                    const card = document.createElement('div');
+                    card.className = `bg-white shadow-md cursor-pointer transition-all p-4 rounded-lg w-full ${selectedCategory.toLowerCase() === item.category.toLowerCase() ? 'ring-2 ring-blue-500' : ''}`;
+                    card.onclick = () => handleCategoryChange(item.category);
+                    card.innerHTML = `
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm text-gray-500">${item.title}</p>
+                                <p class="text-2xl font-bold">${item.value.toLocaleString()} ML</p>
+                            </div>
+                            <div class="${selectedCategory.toLowerCase() === item.category.toLowerCase() ? 'text-blue-500' : 'text-gray-400'}">
+                                <span class="material-icons" style="font-size: 36px;">${item.icon}</span>
+                            </div>
+                        </div>
+                    `;
+                    summaryCardsContainer.appendChild(card);
+                });
+            }
 
 
             function handleYearChange(event) {
@@ -1055,7 +1123,134 @@
                 // Embed the bar chart
                 vegaEmbed('#efficiencyBarChart', barChartSpec, {actions: false}).catch(console.error);
             }
+
+            function createHeatmap(selectedIndicator = 'Area-average rainfall ') {
+                const heatmapSpec = {
+                  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+                  "description": "Heatmap of Water Consumption by Region and Year",
+                  "width": 1000,
+                  "height": 280,
+                  "data": {
+                    "url": "https://raw.githubusercontent.com/Lhart0050/population-density-map/main/reshaped_data.csv",
+                    "format": {
+                      "type": "csv"
+                    }
+                  },
+                  "transform": [
+                    {
+                      "calculate": "toNumber(datum.Value)",
+                      "as": "Value"
+                    },
+                    {
+                      "filter": `datum.Indicator == "${selectedIndicator}"`
+                    },
+                    {
+                      "lookup": "Region",
+                      "from": {
+                        "data": {
+                          "values": [
+                            { "Region": "New South Wales", "RegionAlias": "NSW" },
+                            { "Region": "Victoria", "RegionAlias": "VIC" },
+                            { "Region": "Queensland", "RegionAlias": "QLD" },
+                            { "Region": "Western Australia", "RegionAlias": "WA" },
+                            { "Region": "South Australia", "RegionAlias": "SA" },
+                            { "Region": "Tasmania", "RegionAlias": "TAS" },
+                            { "Region": "Australian Capital Territory", "RegionAlias": "ACT" },
+                            { "Region": "Northern Territory", "RegionAlias": "NT" }
+                          ]
+                        },
+                        "key": "Region",
+                        "fields": ["RegionAlias"]
+                      },
+                      "default": "Other"
+                    }
+                  ],
+                  "mark": "rect",
+                  "encoding": {
+                    "x": {
+                      "field": "Year",
+                      "type": "ordinal",
+                      "title": "Year",
+                      "axis": {
+                        "labelAngle": 0
+                      }
+                    },
+                    "y": {
+                      "field": "RegionAlias",
+                      "type": "nominal",
+                      "title": "Region"
+                    },
+                    "color": {
+                      "field": "Value",
+                      "type": "quantitative",
+                      "title": "Water Usage (ML)",
+                      "scale": {
+                        "scheme": "blues"
+                      },
+                      "legend": {
+                        "orient": "bottom",
+                        "direction": "horizontal",
+                        "gradientLength": 1000,
+                        "titleFontSize": 14,
+                        "labelFontSize": 12
+                      }
+                    },
+                    "tooltip": [
+                      {
+                        "field": "RegionAlias",
+                        "type": "nominal",
+                        "title": "Region"
+                      },
+                      {
+                        "field": "Indicator",
+                        "type": "nominal"
+                      },
+                      {
+                        "field": "Year",
+                        "type": "ordinal"
+                      },
+                      {
+                        "field": "Value",
+                        "type": "quantitative",
+                        "title": "Value"
+                      }
+                    ]
+                  },
+                  "config": {
+                    "axis": {
+                      "labelFontSize": 12,
+                      "titleFontSize": 14
+                    },
+                    "legend": {
+                      "labelFontSize": 12,
+                      "titleFontSize": 14,
+                    }
+                  }
+                };
+
+                vegaEmbed('#circularHeatmap', heatmapSpec, {actions: false}).catch(console.error);
+            }
+
+            // Function to toggle the dropdown menu
+            function toggleDropdown() {
+                const dropdown = document.getElementById('indicatorDropdown');
+                dropdown.classList.toggle('hidden');
+            }
+
+            // Function to update the indicator and re-render the heatmap
+            function updateIndicator(indicator, displayText) {
+                // Update the subtitle text
+                document.getElementById('indicatorTitle').innerText = displayText;
+                // Hide the dropdown
+                toggleDropdown();
+                // Recreate the heatmap with the new indicator
+                createHeatmap(indicator);
+            }
+
+            // Initialize the application when the DOM is fully loaded
+            document.addEventListener("DOMContentLoaded", init);
         </script>
     </div>
 </body>
 </html>
+
