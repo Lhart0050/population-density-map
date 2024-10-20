@@ -91,12 +91,14 @@
             color: white;
         }
 
-        /* Added CSS for responsive summary cards */
+        #efficiencyLineChart {
+            cursor: pointer;
+        }
+
         #summaryCards > div {
             min-width: 200px;
         }
 
-        /* New styles for map interactivity */
         .vega-embed .vega-actions {
             display: none !important;
         }
@@ -258,19 +260,10 @@
                         This approach focuses on reducing, reusing, and recycling water throughout its lifecycle.
                     </p>
                     <h3 class="text-2xl font-semibold mb-4 flex items-center cursor-pointer" onclick="toggleDropdown()">
-                        <span id="indicatorTitle">Area average rainfall</span>
-                        <svg class="ml-2 w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                        </svg>
+                        <span id="indicatorTitle">water extraction and return flow</span>
                     </h3>
-                    <div id="indicatorDropdown" class="hidden absolute bg-opacity-90 bg-blue-900 text-white rounded shadow-lg mt-2 z-10">
-                        <ul>
-                            <li class="px-4 py-2 hover:bg-white/10 cursor-pointer" onclick="updateIndicator('Area-average rainfall ', 'Area average rainfall')">Area average rainfall</li>
-                            <li class="px-4 py-2 hover:bg-white/10 cursor-pointer" onclick="updateIndicator('Accessible volume in major dam storages as of June 30 ', 'Accessible volume in major dam storages')">Accessible volume in major dam storages</li>
-                        </ul>
-                    </div>
                     <div class="bg-white p-6 rounded-lg shadow-md">
-                        <div id="circularHeatmap"></div>
+                        <div id="waterExtractionChart"></div>
                     </div>
                     <p class="mb-4">
                         Embracing a circular water economy can lead to significant improvements in water efficiency. 
@@ -334,169 +327,185 @@
             let lockedYear = null; // To store the locked year
 
             function createEfficiencyChart() {
-                // Prepare data for the line chart
-                const nationalData = waterData.filter(d => 
-                    d.Region.toLowerCase() === 'australia' && 
-                    (d.Indicator.toLowerCase() === 'total water use with utilities' || d.Indicator.toLowerCase() === 'total water consumption')
-                );
+    // Prepare data for the line chart
+    const nationalData = waterData.filter(d => 
+        d.Region.toLowerCase() === 'australia' && 
+        (d.Indicator.toLowerCase() === 'total water use with utilities' || d.Indicator.toLowerCase() === 'total water consumption')
+    );
 
-                // Convert fiscal years to numeric years
-                nationalData.forEach(d => {
-                    const [startYear] = d.Year.split('-');
-                    d.NumericYear = parseInt(startYear);
-                });
+    // Convert fiscal years to numeric years
+    nationalData.forEach(d => {
+        const [startYear] = d.Year.split('-');
+        d.NumericYear = parseInt(startYear);
+    });
 
-                // Pivot data and calculate WaterSaved
-                const pivotedData = [];
-                const years = [...new Set(nationalData.map(d => d.NumericYear))].sort();
+    // Pivot data and calculate WaterSaved
+    const pivotedData = [];
+    const years = [...new Set(nationalData.map(d => d.NumericYear))].sort();
 
-                years.forEach(year => {
-                    const yearData = nationalData.filter(d => d.NumericYear === year);
-                    const entry = { NumericYear: year, Year: `${year}-${(year+1).toString().slice(-2)}` };
-                    yearData.forEach(d => {
-                        if (d.Indicator.toLowerCase() === 'total water consumption') {
-                            entry.Consumption = d.Value;
-                        } else if (d.Indicator.toLowerCase() === 'total water use with utilities') {
-                            entry.Utilities = d.Value;
-                        }
-                    });
-                    if (entry.Consumption != null && entry.Utilities != null) {
-                        entry.WaterSaved = entry.Utilities - entry.Consumption;
-                        pivotedData.push(entry);
-                    }
-                });
-
-                if (pivotedData.length === 0) {
-                    console.error("No data available for the selected indicators.");
-                    return;
-                }
-
-                // Line Chart Specification with Improved Design
-                const lineChartSpec = {
-                    $schema: "https://vega.github.io/schema/vega-lite/v5.json",
-                    width: "container",
-                    height: 250,
-                    data: { values: pivotedData },
-                    encoding: {
-                        x: { 
-                            field: "NumericYear", 
-                            type: "quantitative", 
-                            title: null, // Removed x-axis title
-                            axis: { 
-                                format: "d", 
-                                grid: false // Remove vertical grid lines
-                            } 
-                        }
-                    },
-                    layer: [
-                        {
-                            mark: { type: "area", color: "#a1c4fd", opacity: 0.5 },
-                            encoding: {
-                                y: { 
-                                    field: "Utilities", 
-                                    type: "quantitative", 
-                                    title: "Megaliters (ML)", 
-                                    axis: { grid: false } // Remove horizontal grid lines
-                                },
-                                y2: { field: "Consumption" },
-                                tooltip: [
-                                    { field: "Year", type: "nominal", title: "Year" },
-                                    { field: "Consumption", type: "quantitative", title: "Total Consumption (ML)", format: "," },
-                                    { field: "Utilities", type: "quantitative", title: "Total Water Use (ML)", format: "," },
-                                    { field: "WaterSaved", type: "quantitative", title: "Total Water Returned to Earth (ML)", format: "," }
-                                ]
-                            }
-                        },
-                        {
-                            mark: { type: "line", point: true, strokeWidth: 2 },
-                            encoding: {
-                                y: { 
-                                    field: "Consumption", 
-                                    type: "quantitative" 
-                                },
-                                color: { value: "#4e79a7" },
-                                tooltip: [
-                                    { field: "Year", type: "nominal", title: "Year" },
-                                    { field: "Consumption", type: "quantitative", title: "Total Consumption (ML)", format: "," },
-                                    { field: "WaterSaved", type: "quantitative", title: "Total Water Returned to Earth (ML)", format: "," }
-                                ]
-                            }
-                        },
-                        {
-                            mark: { type: "line", point: true, strokeWidth: 2 },
-                            encoding: {
-                                y: { 
-                                    field: "Utilities", 
-                                    type: "quantitative" 
-                                },
-                                color: { value: "#f28e2c" },
-                                tooltip: [
-                                    { field: "Year", type: "nominal", title: "Year" },
-                                    { field: "Utilities", type: "quantitative", title: "Total Water Use (ML)", format: "," },
-                                    { field: "WaterSaved", type: "quantitative", title: "Total Water Returned to Earth (ML)", format: "," }
-                                ]
-                            }
-                        }
-                    ],
-                    selection: {
-                        hover: {
-                            type: "single",
-                            nearest: true,
-                            on: "mouseover",
-                            fields: ["NumericYear"],
-                            empty: "none"
-                        }
-                    },
-                    config: {
-                        axis: {
-                            labelFontSize: 12,
-                            titleFontSize: 14
-                        },
-                        legend: {
-                            labelFontSize: 12,
-                            titleFontSize: 14
-                        }
-                    }
-                };
-
-                // Embed the line chart
-                vegaEmbed('#efficiencyLineChart', lineChartSpec, {actions: false}).then(result => {
-                    const view = result.view;
-
-                    // Event listener for hover to update the bar chart
-                    view.addEventListener('mouseover', function(event, item) {
-                        if (item && item.datum && item.datum.Year && !lockedYear) {
-                            createDifferenceBarChart(item.datum.Year);
-                            updateBarChartTitle(item.datum.Year);
-                        }
-                    });
-
-                    // Event listener for mouseout to revert to default year if not locked
-                    view.addEventListener('mouseout', function(event, item) {
-                        if (!lockedYear) {
-                            createDifferenceBarChart("2020-21"); // Default year
-                            updateBarChartTitle("2020-21");
-                        }
-                    });
-
-                    // Event listener for click to lock/unlock the bar chart
-                    view.addEventListener('click', function(event, item) {
-                        if (item && item.datum && item.datum.Year) {
-                            if (lockedYear === item.datum.Year) {
-                                // Unlock if clicking the same year again
-                                lockedYear = null;
-                                createDifferenceBarChart("2020-21"); // Revert to default
-                                updateBarChartTitle("2020-21");
-                            } else {
-                                // Lock to the clicked year
-                                lockedYear = item.datum.Year;
-                                createDifferenceBarChart(item.datum.Year);
-                                updateBarChartTitle(item.datum.Year);
-                            }
-                        }
-                    });
-                }).catch(console.error);
+    years.forEach(year => {
+        const yearData = nationalData.filter(d => d.NumericYear === year);
+        const entry = { NumericYear: year, Year: `${year}-${(year+1).toString().slice(-2)}` };
+        yearData.forEach(d => {
+            if (d.Indicator.toLowerCase() === 'total water consumption') {
+                entry.Consumption = d.Value;
+            } else if (d.Indicator.toLowerCase() === 'total water use with utilities') {
+                entry.Utilities = d.Value;
             }
+        });
+        if (entry.Consumption != null && entry.Utilities != null) {
+            entry.WaterSaved = entry.Utilities - entry.Consumption;
+            pivotedData.push(entry);
+        }
+    });
+
+    if (pivotedData.length === 0) {
+        console.error("No data available for the selected indicators.");
+        return;
+    }
+
+    // Line Chart Specification with Vertical Line for Selected Year
+    const lineChartSpec = {
+        $schema: "https://vega.github.io/schema/vega-lite/v5.json",
+        width: "container",
+        height: 250,
+        data: { values: pivotedData },
+        encoding: {
+            x: { 
+                field: "NumericYear", 
+                type: "quantitative", 
+                title: null,
+                axis: { 
+                    format: "d", 
+                    grid: false
+                } 
+            }
+        },
+        layer: [
+            {
+                mark: { type: "area", color: "#a1c4fd", opacity: 0.5 },
+                encoding: {
+                    y: { 
+                        field: "Utilities", 
+                        type: "quantitative", 
+                        title: "Megaliters (ML)", 
+                        axis: { grid: false }
+                    },
+                    y2: { field: "Consumption" },
+                    tooltip: [
+                        { field: "Year", type: "nominal", title: "Year" },
+                        { field: "Consumption", type: "quantitative", title: "Total Consumption (ML)", format: "," },
+                        { field: "Utilities", type: "quantitative", title: "Total Water Use (ML)", format: "," },
+                        { field: "WaterSaved", type: "quantitative", title: "Total Water Returned to Earth (ML)", format: "," }
+                    ]
+                }
+            },
+            {
+                mark: { type: "line", point: true, strokeWidth: 2 },
+                encoding: {
+                    y: { field: "Consumption", type: "quantitative" },
+                    color: { value: "#4e79a7" },
+                    tooltip: [
+                        { field: "Year", type: "nominal", title: "Year" },
+                        { field: "Consumption", type: "quantitative", title: "Total Consumption (ML)", format: "," },
+                        { field: "WaterSaved", type: "quantitative", title: "Total Water Returned to Earth (ML)", format: "," }
+                    ]
+                }
+            },
+            {
+                mark: { type: "line", point: true, strokeWidth: 2 },
+                encoding: {
+                    y: { field: "Utilities", type: "quantitative" },
+                    color: { value: "#f28e2c" },
+                    tooltip: [
+                        { field: "Year", type: "nominal", title: "Year" },
+                        { field: "Utilities", type: "quantitative", title: "Total Water Use (ML)", format: "," },
+                        { field: "WaterSaved", type: "quantitative", title: "Total Water Returned to Earth (ML)", format: "," }
+                    ]
+                }
+            }
+        ],
+        selection: {
+            hover: {
+                type: "single",
+                nearest: true,
+                on: "mouseover",
+                fields: ["NumericYear"],
+                empty: "none"
+            }
+        },
+        config: {
+            axis: {
+                labelFontSize: 12,
+                titleFontSize: 14
+            },
+            legend: {
+                labelFontSize: 12,
+                titleFontSize: 14
+            }
+        }
+    };
+
+    // Add Vertical Line if a Year is Locked
+    if (lockedYear) {
+        const selectedYearNumeric = parseInt(lockedYear.split('-')[0]);
+        lineChartSpec.layer.push({
+            data: { values: [{ "selectedYear": selectedYearNumeric }] },
+            mark: {
+                type: 'rule',
+                color: 'red',
+                strokeWidth: 2
+            },
+            encoding: {
+                x: { field: 'selectedYear', type: 'quantitative' }
+            }
+        });
+    }
+
+    // Clear the existing chart before rendering a new one
+    document.getElementById('efficiencyLineChart').innerHTML = '';
+
+    // Embed the line chart
+    vegaEmbed('#efficiencyLineChart', lineChartSpec, {actions: false}).then(result => {
+        const view = result.view;
+
+        // Event listener for hover to update the bar chart
+        view.addEventListener('mouseover', function(event, item) {
+            if (item && item.datum && item.datum.Year && !lockedYear) {
+                createDifferenceBarChart(item.datum.Year);
+                updateBarChartTitle(item.datum.Year);
+            }
+        });
+
+        // Event listener for mouseout to revert to default year if not locked
+        view.addEventListener('mouseout', function(event, item) {
+            if (!lockedYear) {
+                createDifferenceBarChart("2020-21"); // Default year
+                updateBarChartTitle("2020-21");
+            }
+        });
+
+        // Event listener for click to lock/unlock the bar chart
+        view.addEventListener('click', function(event, item) {
+            if (item && item.datum && item.datum.Year) {
+                if (lockedYear === item.datum.Year) {
+                    // Unlock if clicking the same year again
+                    lockedYear = null;
+                    createDifferenceBarChart("2020-21"); // Revert to default
+                    updateBarChartTitle("2020-21");
+                } else {
+                    // Lock to the clicked year
+                    lockedYear = item.datum.Year;
+                    createDifferenceBarChart(item.datum.Year);
+                    updateBarChartTitle(item.datum.Year);
+                }
+                // Recreate the line chart to reflect the change
+                createEfficiencyChart();
+            }
+        });
+    }).catch(console.error);
+}
+
 
             function createDifferenceBarChart(year) {
                 const indicators = ["Total water use with utilities", "Total water consumption"];
@@ -582,7 +591,6 @@
                     }
                 };
 
-                // Embed the bar chart
                 vegaEmbed('#efficiencyBarChart', barChartSpec, {actions: false}).catch(console.error);
             }
 
@@ -609,7 +617,8 @@
                     createEfficiencyChart();
                     createDifferenceBarChart("2020-21"); // Create the bar chart with default year
                     updateBarChartTitle("2020-21"); // Set initial bar chart title
-                    createHeatmap(); // Initialize the Heatmap
+                    createHeatmap(); 
+                    createWaterExtractionChart();
                 }).catch(error => {
                     console.error("Error loading CSV data:", error);
                     alert("Failed to load water consumption data.");
@@ -1249,8 +1258,124 @@
 
             // Initialize the application when the DOM is fully loaded
             document.addEventListener("DOMContentLoaded", init);
+
+            // Function to create the Water Extraction and Return Flow Chart
+            function createWaterExtractionChart() {
+    const waterExtractionSpec = {
+      "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+      "description": "Water use data pyramid converted from Gigalitres (GL) to Megalitres (ML).",
+      "data": {
+        "url": "https://raw.githubusercontent.com/Lhart0050/population-density-map/refs/heads/Assignment/Water_Use_Data_in_Long_Format.csv",
+        "format": { "type": "csv" }
+      },
+      "autosize": {
+          "type": "fit",
+          "contains": "padding"
+      },
+      "hconcat": [
+        {
+          "width": 450,  // Adjusted width for the first chart
+          "height": 300, // Adjusted height
+          "transform": [
+            { "filter": "datum['Flow Type'] == 'Self-extracted (GL)'" },
+            { "calculate": "-datum['Value (GL)'] / 1000", "as": "NegValue_ML" }
+          ],
+          "title": "Self-extracted (ML)",
+          "mark": {"type": "bar", "tooltip": true},
+          "encoding": {
+            "y": {
+              "field": "Source",
+              "type": "ordinal",
+              "axis": null,
+              "sort": "descending"
+            },
+            "x": {
+              "aggregate": "sum",
+              "field": "NegValue_ML",
+              "type": "quantitative",
+              "axis": { "format": ".3s", "title": "Value (ML)", "titlePadding": 10 }
+            },
+            "color": {
+              "field": "Flow Type",
+              "legend": null,
+              "scale": { "range": ["#084a90"] }
+            },
+            "text": {
+              "aggregate": "sum",
+              "field": "NegValue_ML",
+              "type": "quantitative",
+              "format": ".3s"
+            }
+          }
+        },
+        {
+          "width": 100, // Fixed width for the Source labels
+          "height": 300,
+          "view": { "stroke": null },
+          "mark": {
+            "type": "text",
+            "align": "center"
+          },
+          "encoding": {
+            "y": {
+              "field": "Source",
+              "type": "ordinal",
+              "axis": null,
+              "sort": "descending"
+            },
+            "text": { "field": "Source", "type": "nominal" }
+          }
+        },
+        {
+          "width":450,
+          "height":300,
+          "transform": [
+            { "filter": "datum['Flow Type'] == 'Return flows (GL)'" },
+            { "calculate": "datum['Value (GL)'] / 1000", "as": "Value_ML" }
+          ],
+          "title": "Return flows (ML)",
+          "mark": {"type": "bar", "tooltip": true},
+          "encoding": {
+            "y": {
+              "field": "Source",
+              "type": "ordinal",
+              "axis": null,
+              "sort": "descending"
+            },
+            "x": {
+              "aggregate": "sum",
+              "field": "Value_ML",
+              "type": "quantitative",
+              "axis": { "format": ".3s", "title": "Value (ML)", "titlePadding": 10 }
+            },
+            "color": {
+              "field": "Flow Type",
+              "legend": null,
+              "scale": { "range": ["#3c8ac2"] }
+            },
+            "text": {
+              "aggregate": "sum",
+              "field": "Value_ML",
+              "type": "quantitative",
+              "format": ".3s"
+            }
+          }
+        }
+      ],
+      "config": {
+        "view": { "stroke": null },
+        "axis": { "grid": false },
+        "style": {
+          "guide-title": {"fontSize": 14, "font": "Arial"},
+          "guide-label": {"fontSize": 12, "font": "Arial"},
+          "title": {"fontSize": 16, "font": "Arial", "fontWeight": "bold"}
+        }
+      }
+    };
+
+    vegaEmbed('#waterExtractionChart', waterExtractionSpec, {actions: false}).catch(console.error);
+}
         </script>
     </div>
 </body>
 </html>
-

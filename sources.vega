@@ -1,119 +1,105 @@
 {
   "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
-  "description": "Heatmap of Water Consumption by Region and Year",
-  "width": 800,
-  "height": 600,
-  "autosize": {
-    "type": "pad",
-    "contains": "padding"
-  },
+  "description": "Water use data pyramid converted from Gigalitres (GL) to Megalitres (ML).",
   "data": {
-    "url": "https://raw.githubusercontent.com/Lhart0050/population-density-map/main/reshaped_data.csv",
-    "format": {
-      "type": "csv"
-    }
+    "url": "https://raw.githubusercontent.com/Lhart0050/population-density-map/refs/heads/Assignment/Water_Use_Data_in_Long_Format.csv",
+    "format": { "type": "csv" }
   },
-  "transform": [
+  "spacing": 5,
+  "width": 500,
+  "height": 300,
+  "hconcat": [
     {
-      "calculate": "toNumber(datum.Value)",
-      "as": "Value"
-    },
-    {
-      "filter": "datum.Indicator == IndicatorSelect"
-    },
-    {
-      "lookup": "Region",
-      "from": {
-        "data": {
-          "values": [
-            { "Region": "New South Wales", "RegionAlias": "NSW" },
-            { "Region": "Victoria", "RegionAlias": "VIC" },
-            { "Region": "Queensland", "RegionAlias": "QLD" },
-            { "Region": "Western Australia", "RegionAlias": "WA" },
-            { "Region": "South Australia", "RegionAlias": "SA" },
-            { "Region": "Tasmania", "RegionAlias": "TAS" },
-            { "Region": "Australian Capital Territory", "RegionAlias": "ACT" },
-            { "Region": "Northern Territory", "RegionAlias": "NT" }
-          ]
+      "transform": [
+        { "filter": "datum['Flow Type'] == 'Self-extracted (GL)'" },
+        { "calculate": "-datum['Value (GL)'] / 1000", "as": "NegValue_ML" }
+      ],
+      "title": "Self-extracted (ML)",
+      "mark": {"type": "bar", "tooltip": true},
+      "encoding": {
+        "y": {
+          "field": "Source",
+          "type": "ordinal",
+          "axis": null,
+          "sort": "descending"
         },
-        "key": "Region",
-        "fields": ["RegionAlias"]
-      },
-      "default": "Other"
-    }
-  ],
-  "params": [
+        "x": {
+          "aggregate": "sum",
+          "field": "NegValue_ML",
+          "type": "quantitative",
+          "axis": { "format": ".3s", "title": "Value (ML)", "titlePadding": 10 }
+        },
+        "color": {
+          "field": "Flow Type",
+          "legend": null,
+          "scale": { "range": ["#084a90"] }
+        },
+        "text": {
+          "aggregate": "sum",
+          "field": "NegValue_ML",
+          "type": "quantitative",
+          "format": ".3s"
+        }
+      }
+    },
     {
-      "name": "IndicatorSelect",
-      "value": "Area-average rainfall ",
-      "bind": {
-        "input": "select",
-        "options": [
-          "Area-average rainfall ",
-          "Accessible volume in major dam storages as of June 30 "
-        ],
-        "name": "Select Indicator: "
+      "width": 20,
+      "view": { "stroke": null },
+      "mark": {
+        "type": "text",
+        "align": "center"
+      },
+      "encoding": {
+        "y": {
+          "field": "Source",
+          "type": "ordinal",
+          "axis": null,
+          "sort": "descending"
+        },
+        "text": { "field": "Source", "type": "nominal" }
+      }
+    },
+    {
+      "transform": [
+        { "filter": "datum['Flow Type'] == 'Return flows (GL)'" },
+        { "calculate": "datum['Value (GL)'] / 1000", "as": "Value_ML" }
+      ],
+      "title": "Return flows (ML)",
+      "mark": {"type": "bar", "tooltip": true},
+      "encoding": {
+        "y": {
+          "field": "Source",
+          "type": "ordinal",
+          "axis": null,
+          "sort": "descending"
+        },
+        "x": {
+          "aggregate": "sum",
+          "field": "Value_ML",
+          "type": "quantitative",
+          "axis": { "format": ".3s", "title": "Value (ML)", "titlePadding": 10 }
+        },
+        "color": {
+          "field": "Flow Type",
+          "legend": null,
+          "scale": { "range": ["#3c8ac2"] }
+        },
+        "text": {
+          "aggregate": "sum",
+          "field": "Value_ML",
+          "type": "quantitative",
+          "format": ".3s"
+        }
       }
     }
   ],
-  "mark": "rect",
-  "encoding": {
-    "x": {
-      "field": "Year",
-      "type": "ordinal",
-      "title": "Year",
-      "axis": {
-        "labelAngle": 0
-      }
-    },
-    "y": {
-      "field": "RegionAlias",
-      "type": "nominal",
-      "title": "Region"
-    },
-    "color": {
-      "field": "Value",
-      "type": "quantitative",
-      "title": "Water Usage (ML)",
-      "scale": {
-        "scheme": "blues"
-      },
-      "legend": {
-        "orient": "bottom",
-        "titleFontSize": 14,
-        "labelFontSize": 12
-      }
-    },
-    "tooltip": [
-      {
-        "field": "RegionAlias",
-        "type": "nominal",
-        "title": "Region"
-      },
-      {
-        "field": "Indicator",
-        "type": "nominal"
-      },
-      {
-        "field": "Year",
-        "type": "ordinal"
-      },
-      {
-        "field": "Value",
-        "type": "quantitative",
-        "title": "Value"
-      }
-    ]
-  },
   "config": {
-    "axis": {
-      "labelFontSize": 12,
-      "titleFontSize": 14
-    },
-    "legend": {
-      "labelFontSize": 12,
-      "titleFontSize": 14
+    "view": { "stroke": null },
+    "axis": { "grid": false },
+    "style": {
+      "guide-title": {"fontSize": 14, "font": "Arial"},
+      "guide-label": {"fontSize": 12, "font": "Arial"},
+      "title": {"fontSize": 16, "font": "Arial", "fontWeight": "bold"}
     }
   }
 }
-
