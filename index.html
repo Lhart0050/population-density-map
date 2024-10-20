@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Every Drop Counts: Australia's Water Consumption</title>
+    <title>Every Drop Counts</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- D3.js CDN -->
@@ -13,7 +13,15 @@
     <script src="https://cdn.jsdelivr.net/npm/vega-embed@6"></script>
     <!-- Google Material Icons CDN -->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <!-- Roboto Font -->
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" rel="stylesheet">
     <style>
+        /* General Typography */
+        body, h1, h2, h3, h4, p, span, div, input, button {
+            font-family: 'Roboto', sans-serif;
+        }
+
+        /* Slider Styling */
         .slider {
             -webkit-appearance: none;
             width: 100%;
@@ -32,7 +40,7 @@
             width: 25px;
             height: 25px;
             border-radius: 50%;
-            background: #3c2ac4;
+            background: #05284e;
             cursor: pointer;
         }
 
@@ -40,10 +48,11 @@
             width: 25px;
             height: 25px;
             border-radius: 50%;
-            background: #4CAF50;
+            background: #09284a;
             cursor: pointer;
         }
 
+        /* Legend Styling */
         #donutLegend {
             background-color: white;
             padding: 10px;
@@ -76,6 +85,7 @@
             border-radius: 2px;
         }
 
+        /* Efficiency Section Styling */
         .efficiency-section {
             position: relative;
             width: 100%;
@@ -160,8 +170,8 @@
     <div class="flex flex-col items-center w-full max-w-7xl mx-auto p-4">
         <!-- Header -->
         <div class="w-full bg-gradient-to-b from-indigo-900 to-indigo-700 text-white p-8 rounded-t-lg">
-            <h1 class="text-4xl font-bold mb-2">Every Drop Counts: Australia's Water Consumption</h1>
-            <p class="text-xl">Visualizing water usage across different sectors and regions</p>
+            <h1 class="text-4xl font-bold mb-2">Every Drop Counts</h1>
+            <p class="text-xl">Understanding Australia's Water Usage and Efficiency</p>
         </div>
 
         <!-- Summary Cards -->
@@ -191,11 +201,11 @@
                 <div id="isotypechart" class="w-full h-[120px] mb-6"></div>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                        <h3 class="text-lg font-semibold mb-2">Per Capita</h3>
+                        <h3 class="text-lg font-semibold mb-2">Per Capita Water Use</h3>
                         <div data-chart="per-capita" class="w-full h-[200px]"></div>
                     </div>
                     <div>
-                        <h3 class="text-lg font-semibold mb-2">Per Household</h3>
+                        <h3 class="text-lg font-semibold mb-2">Per Household Water Use</h3>
                         <div data-chart="per-household" class="w-full h-[200px]"></div>
                     </div>
                 </div>
@@ -209,67 +219,64 @@
         <!-- Updated Section: Is it Efficient? -->
         <div class="efficiency-section w-full rounded-lg">
             <div class="efficiency-content max-w-7xl mx-auto">
-                <h2 class="text-4xl font-bold mb-8 text-white text-center">Is it Efficient?</h2>
+                <h2 class="text-4xl font-bold mb-8 text-white text-center">Evaluating Water Resource Efficiency</h2>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    <!-- New Efficiency Metric Card -->
+                    <!-- Efficiency Metric Card -->
                     <div class="bg-white/10 backdrop-blur-lg border-none text-white hover:bg-white/20 transition-all duration-300 rounded-lg overflow-hidden">
                         <div class="p-6">
-                            <div class="chart-title">Water Consumption Trends</div>
+                            <div class="chart-title">Water Consumption vs. Water Use</div>
                             <div class="bg-white p-6 rounded-lg shadow-md">
                                 <div class="chart-container" id="efficiencyLineChart"></div>
                             </div>
                             <p class="chart-description mt-4">
-                                This line chart displays the total water consumption and total water use with utilities over the years.
+                                This line chart shows the difference between total water use and total water consumption over the years. The gap represents the water that is returned to the environment.
                             </p>
                         </div>
                     </div>
 
-                    <!-- Improvement Strategies Card -->
+                    <!-- Water Returned to Environment Card -->
                     <div class="bg-white/10 backdrop-blur-lg border-none text-white hover:bg-white/20 transition-all duration-300 rounded-lg overflow-hidden">
                         <div class="p-6">
-                            <div class="chart-title" id="barChartTitle">Total Water Returned to Earth for 2020-21</div>
+                            <div class="chart-title" id="barChartTitle">Water Returned to Environment by Region</div>
                             <div class="bg-white p-6 rounded-lg shadow-md">
                                 <div id="efficiencyBarChart"></div>
                             </div>
                             <p class="chart-description mt-4">
-                                This bar chart shows the total water returned to Earth for each state in the fiscal year 2020-21.
+                                This bar chart illustrates how each region contributes to returning water to the environment. A larger value indicates more water being returned relative to total use.
                             </p>
                         </div>
                     </div>
                 </div>
 
-                <!-- New Water Section -->
+                <!-- Water Reuse Section -->
                 <div class="mt-12 bg-white/5 backdrop-blur-sm rounded-lg p-6 text-white relative">
                     <h3 class="text-2xl font-semibold mb-4 flex items-center cursor-pointer" onclick="toggleDropdown()">
-                        <span id="indicatorTitle">Area average rainfall</span>
+                        <span id="indicatorTitle">Area Average Rainfall</span>
                         <svg class="ml-2 w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                         </svg>
                     </h3>
                     <div id="indicatorDropdown" class="hidden absolute bg-opacity-90 bg-blue-900 text-white rounded shadow-lg mt-2 z-10">
                         <ul>
-                            <li class="px-4 py-2 hover:bg-white/10 cursor-pointer" onclick="updateIndicator('Area-average rainfall ', 'Area average rainfall')">Area average rainfall</li>
-                            <li class="px-4 py-2 hover:bg-white/10 cursor-pointer" onclick="updateIndicator('Accessible volume in major dam storages as of June 30 ', 'Accessible volume in major dam storages')">Accessible volume in major dam storages</li>
+                            <li class="px-4 py-2 hover:bg-white/10 cursor-pointer" onclick="updateIndicator('Area-average rainfall ', 'Area Average Rainfall')">Area Average Rainfall</li>
+                            <li class="px-4 py-2 hover:bg-white/10 cursor-pointer" onclick="updateIndicator('Accessible volume in major dam storages as of June 30 ', 'Accessible Volume in Major Dam Storages')">Accessible Volume in Major Dam Storages</li>
                         </ul>
                     </div>
                     <div class="bg-white p-6 rounded-lg shadow-md">
                         <div id="circularHeatmap"></div>
                     </div>
-                    <p class="mb-4">
-                        Embracing a circular water economy can lead to significant improvements in water efficiency. 
-                        This approach focuses on reducing, reusing, and recycling water throughout its lifecycle.
+                    <p class="mb-4 mt-4">
+                        This heatmap shows the relationship between rainfall and regions over the years. Higher rainfall can aid in replenishing water resources if utilized effectively through rainwater harvesting and reuse.
                     </p>
-                    <h3 class="text-2xl font-semibold mb-4 flex items-center cursor-pointer" onclick="toggleDropdown()">
-                        <span id="indicatorTitle">water extraction and return flow</span>
-                    </h3>
+
+                    <h3 class="text-2xl font-semibold mb-4 mt-8">Water Extraction and Return Flow</h3>
                     <div class="bg-white p-6 rounded-lg shadow-md">
                         <div id="waterExtractionChart"></div>
                     </div>
-                    <p class="mb-4">
-                        Embracing a circular water economy can lead to significant improvements in water efficiency. 
-                        This approach focuses on reducing, reusing, and recycling water throughout its lifecycle.
+                    <p class="mb-4 mt-4">
+                        The chart demonstrates that a significant amount of water extracted from the ground doesn't return to the environment due to processes like distillation. This highlights the importance of recycling surface water or extract from the sea to enhance sustainability.
                     </p>
-                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-center">
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-center mt-8">
                         <div class="bg-white/10 p-4 rounded-lg">
                             <h4 class="text-lg font-semibold mb-2">Reduce</h4>
                             <p class="text-3xl font-bold text-blue-300 mb-2">20%</p>
@@ -292,7 +299,9 @@
 
         <!-- Footer -->
         <div class="w-full bg-indigo-700 text-white p-4 text-center mt-8">
-            &copy; 2024 Every Drop Counts
+            <span>Laurentius Hartojo</span><br>
+            <span>Last Modified: 19/10/2024</span><br>
+            <span>Data source: Australia Bureau Statistic</span><br>
         </div>
 
         <script>
@@ -327,185 +336,197 @@
             let lockedYear = null; // To store the locked year
 
             function createEfficiencyChart() {
-    // Prepare data for the line chart
-    const nationalData = waterData.filter(d => 
-        d.Region.toLowerCase() === 'australia' && 
-        (d.Indicator.toLowerCase() === 'total water use with utilities' || d.Indicator.toLowerCase() === 'total water consumption')
-    );
+                // Prepare data for the line chart
+                const nationalData = waterData.filter(d => 
+                    d.Region.toLowerCase() === 'australia' && 
+                    (d.Indicator.toLowerCase() === 'total water use with utilities' || d.Indicator.toLowerCase() === 'total water consumption')
+                );
 
-    // Convert fiscal years to numeric years
-    nationalData.forEach(d => {
-        const [startYear] = d.Year.split('-');
-        d.NumericYear = parseInt(startYear);
-    });
+                // Convert fiscal years to numeric years
+                nationalData.forEach(d => {
+                    const [startYear] = d.Year.split('-');
+                    d.NumericYear = parseInt(startYear);
+                });
 
-    // Pivot data and calculate WaterSaved
-    const pivotedData = [];
-    const years = [...new Set(nationalData.map(d => d.NumericYear))].sort();
+                // Pivot data and calculate WaterSaved
+                const pivotedData = [];
+                const years = [...new Set(nationalData.map(d => d.NumericYear))].sort();
 
-    years.forEach(year => {
-        const yearData = nationalData.filter(d => d.NumericYear === year);
-        const entry = { NumericYear: year, Year: `${year}-${(year+1).toString().slice(-2)}` };
-        yearData.forEach(d => {
-            if (d.Indicator.toLowerCase() === 'total water consumption') {
-                entry.Consumption = d.Value;
-            } else if (d.Indicator.toLowerCase() === 'total water use with utilities') {
-                entry.Utilities = d.Value;
-            }
-        });
-        if (entry.Consumption != null && entry.Utilities != null) {
-            entry.WaterSaved = entry.Utilities - entry.Consumption;
-            pivotedData.push(entry);
-        }
-    });
+                years.forEach(year => {
+                    const yearData = nationalData.filter(d => d.NumericYear === year);
+                    const entry = { NumericYear: year, Year: `${year}-${(year+1).toString().slice(-2)}` };
+                    yearData.forEach(d => {
+                        if (d.Indicator.toLowerCase() === 'total water consumption') {
+                            entry.Consumption = d.Value;
+                        } else if (d.Indicator.toLowerCase() === 'total water use with utilities') {
+                            entry.Utilities = d.Value;
+                        }
+                    });
+                    if (entry.Consumption != null && entry.Utilities != null) {
+                        entry.WaterSaved = entry.Utilities - entry.Consumption;
+                        pivotedData.push(entry);
+                    }
+                });
 
-    if (pivotedData.length === 0) {
-        console.error("No data available for the selected indicators.");
-        return;
-    }
+                if (pivotedData.length === 0) {
+                    console.error("No data available for the selected indicators.");
+                    return;
+                }
 
-    // Line Chart Specification with Vertical Line for Selected Year
-    const lineChartSpec = {
-        $schema: "https://vega.github.io/schema/vega-lite/v5.json",
-        width: "container",
-        height: 250,
-        data: { values: pivotedData },
-        encoding: {
-            x: { 
-                field: "NumericYear", 
-                type: "quantitative", 
-                title: null,
-                axis: { 
-                    format: "d", 
-                    grid: false
-                } 
-            }
-        },
-        layer: [
-            {
-                mark: { type: "area", color: "#a1c4fd", opacity: 0.5 },
-                encoding: {
-                    y: { 
-                        field: "Utilities", 
-                        type: "quantitative", 
-                        title: "Megaliters (ML)", 
-                        axis: { grid: false }
+                // Line Chart Specification with Vertical Line for Selected Year
+                const lineChartSpec = {
+                    $schema: "https://vega.github.io/schema/vega-lite/v5.json",
+                    width: "container",
+                    height: 250,
+                    data: { values: pivotedData },
+                    encoding: {
+                        x: { 
+                            field: "NumericYear", 
+                            type: "quantitative", 
+                            title: null,
+                            axis: { 
+                                format: "d", 
+                                grid: false,
+                                labelFontSize: 12,
+                                titleFontSize: 14,
+                                labelFont: "Roboto",
+                                titleFont: "Roboto"
+                            } 
+                        }
                     },
-                    y2: { field: "Consumption" },
-                    tooltip: [
-                        { field: "Year", type: "nominal", title: "Year" },
-                        { field: "Consumption", type: "quantitative", title: "Total Consumption (ML)", format: "," },
-                        { field: "Utilities", type: "quantitative", title: "Total Water Use (ML)", format: "," },
-                        { field: "WaterSaved", type: "quantitative", title: "Total Water Returned to Earth (ML)", format: "," }
-                    ]
+                    layer: [
+                        {
+                            mark: { type: "area", color: "#a1c4fd", opacity: 0.5 },
+                            encoding: {
+                                y: { 
+                                    field: "Utilities", 
+                                    type: "quantitative", 
+                                    title: "Megaliters (ML)", 
+                                    axis: { grid: false, labelFontSize: 12, titleFontSize: 14, labelFont: "Roboto", titleFont: "Roboto" }
+                                },
+                                y2: { field: "Consumption" },
+                                tooltip: [
+                                    { field: "Year", type: "nominal", title: "Year" },
+                                    { field: "Consumption", type: "quantitative", title: "Total Consumption (ML)", format: "," },
+                                    { field: "Utilities", type: "quantitative", title: "Total Water Use (ML)", format: "," },
+                                    { field: "WaterSaved", type: "quantitative", title: "Water Returned to Environment (ML)", format: "," }
+                                ]
+                            }
+                        },
+                        {
+                            mark: { type: "line", point: true, strokeWidth: 2 },
+                            encoding: {
+                                y: { field: "Consumption", type: "quantitative" },
+                                color: { value: "#4e79a7" },
+                                tooltip: [
+                                    { field: "Year", type: "nominal", title: "Year" },
+                                    { field: "Consumption", type: "quantitative", title: "Total Consumption (ML)", format: "," },
+                                    { field: "WaterSaved", type: "quantitative", title: "Water Returned to Environment (ML)", format: "," }
+                                ]
+                            }
+                        },
+                        {
+                            mark: { type: "line", point: true, strokeWidth: 2 },
+                            encoding: {
+                                y: { field: "Utilities", type: "quantitative" },
+                                color: { value: "#f28e2c" },
+                                tooltip: [
+                                    { field: "Year", type: "nominal", title: "Year" },
+                                    { field: "Utilities", type: "quantitative", title: "Total Water Use (ML)", format: "," },
+                                    { field: "WaterSaved", type: "quantitative", title: "Water Returned to Environment (ML)", format: "," }
+                                ]
+                            }
+                        }
+                    ],
+                    selection: {
+                        hover: {
+                            type: "single",
+                            nearest: true,
+                            on: "mouseover",
+                            fields: ["NumericYear"],
+                            empty: "none"
+                        }
+                    },
+                    config: {
+                        axis: {
+                            labelFontSize: 12,
+                            titleFontSize: 14,
+                            labelFont: "Roboto",
+                            titleFont: "Roboto"
+                        },
+                        legend: {
+                            labelFontSize: 12,
+                            titleFontSize: 14,
+                            labelFont: "Roboto",
+                            titleFont: "Roboto"
+                        },
+                        title: {
+                            fontSize: 16,
+                            font: "Roboto",
+                            fontWeight: "bold"
+                        }
+                    }
+                };
+
+                // Add Vertical Line if a Year is Locked
+                if (lockedYear) {
+                    const selectedYearNumeric = parseInt(lockedYear.split('-')[0]);
+                    lineChartSpec.layer.push({
+                        data: { values: [{ "selectedYear": selectedYearNumeric }] },
+                        mark: {
+                            type: 'rule',
+                            color: 'red',
+                            strokeWidth: 2
+                        },
+                        encoding: {
+                            x: { field: 'selectedYear', type: 'quantitative' }
+                        }
+                    });
                 }
-            },
-            {
-                mark: { type: "line", point: true, strokeWidth: 2 },
-                encoding: {
-                    y: { field: "Consumption", type: "quantitative" },
-                    color: { value: "#4e79a7" },
-                    tooltip: [
-                        { field: "Year", type: "nominal", title: "Year" },
-                        { field: "Consumption", type: "quantitative", title: "Total Consumption (ML)", format: "," },
-                        { field: "WaterSaved", type: "quantitative", title: "Total Water Returned to Earth (ML)", format: "," }
-                    ]
-                }
-            },
-            {
-                mark: { type: "line", point: true, strokeWidth: 2 },
-                encoding: {
-                    y: { field: "Utilities", type: "quantitative" },
-                    color: { value: "#f28e2c" },
-                    tooltip: [
-                        { field: "Year", type: "nominal", title: "Year" },
-                        { field: "Utilities", type: "quantitative", title: "Total Water Use (ML)", format: "," },
-                        { field: "WaterSaved", type: "quantitative", title: "Total Water Returned to Earth (ML)", format: "," }
-                    ]
-                }
-            }
-        ],
-        selection: {
-            hover: {
-                type: "single",
-                nearest: true,
-                on: "mouseover",
-                fields: ["NumericYear"],
-                empty: "none"
-            }
-        },
-        config: {
-            axis: {
-                labelFontSize: 12,
-                titleFontSize: 14
-            },
-            legend: {
-                labelFontSize: 12,
-                titleFontSize: 14
-            }
-        }
-    };
 
-    // Add Vertical Line if a Year is Locked
-    if (lockedYear) {
-        const selectedYearNumeric = parseInt(lockedYear.split('-')[0]);
-        lineChartSpec.layer.push({
-            data: { values: [{ "selectedYear": selectedYearNumeric }] },
-            mark: {
-                type: 'rule',
-                color: 'red',
-                strokeWidth: 2
-            },
-            encoding: {
-                x: { field: 'selectedYear', type: 'quantitative' }
+                // Clear the existing chart before rendering a new one
+                document.getElementById('efficiencyLineChart').innerHTML = '';
+
+                // Embed the line chart
+                vegaEmbed('#efficiencyLineChart', lineChartSpec, {actions: false}).then(result => {
+                    const view = result.view;
+
+                    // Event listener for hover to update the bar chart
+                    view.addEventListener('mouseover', function(event, item) {
+                        if (item && item.datum && item.datum.Year && !lockedYear) {
+                            createDifferenceBarChart(item.datum.Year);
+                            updateBarChartTitle(item.datum.Year);
+                        }
+                    });
+
+                    // Event listener for mouseout to revert to default year if not locked
+                    view.addEventListener('mouseout', function(event, item) {
+                        if (!lockedYear) {
+                            createDifferenceBarChart("2020-21"); // Default year
+                            updateBarChartTitle("2020-21");
+                        }
+                    });
+
+                    // Event listener for click to lock/unlock the bar chart
+                    view.addEventListener('click', function(event, item) {
+                        if (item && item.datum && item.datum.Year) {
+                            if (lockedYear === item.datum.Year) {
+                                // Unlock if clicking the same year again
+                                lockedYear = null;
+                                createDifferenceBarChart("2020-21"); // Revert to default
+                                updateBarChartTitle("2020-21");
+                            } else {
+                                // Lock to the clicked year
+                                lockedYear = item.datum.Year;
+                                createDifferenceBarChart(item.datum.Year);
+                                updateBarChartTitle(item.datum.Year);
+                            }
+                            // Recreate the line chart to reflect the change
+                            createEfficiencyChart();
+                        }
+                    });
+                }).catch(console.error);
             }
-        });
-    }
-
-    // Clear the existing chart before rendering a new one
-    document.getElementById('efficiencyLineChart').innerHTML = '';
-
-    // Embed the line chart
-    vegaEmbed('#efficiencyLineChart', lineChartSpec, {actions: false}).then(result => {
-        const view = result.view;
-
-        // Event listener for hover to update the bar chart
-        view.addEventListener('mouseover', function(event, item) {
-            if (item && item.datum && item.datum.Year && !lockedYear) {
-                createDifferenceBarChart(item.datum.Year);
-                updateBarChartTitle(item.datum.Year);
-            }
-        });
-
-        // Event listener for mouseout to revert to default year if not locked
-        view.addEventListener('mouseout', function(event, item) {
-            if (!lockedYear) {
-                createDifferenceBarChart("2020-21"); // Default year
-                updateBarChartTitle("2020-21");
-            }
-        });
-
-        // Event listener for click to lock/unlock the bar chart
-        view.addEventListener('click', function(event, item) {
-            if (item && item.datum && item.datum.Year) {
-                if (lockedYear === item.datum.Year) {
-                    // Unlock if clicking the same year again
-                    lockedYear = null;
-                    createDifferenceBarChart("2020-21"); // Revert to default
-                    updateBarChartTitle("2020-21");
-                } else {
-                    // Lock to the clicked year
-                    lockedYear = item.datum.Year;
-                    createDifferenceBarChart(item.datum.Year);
-                    updateBarChartTitle(item.datum.Year);
-                }
-                // Recreate the line chart to reflect the change
-                createEfficiencyChart();
-            }
-        });
-    }).catch(console.error);
-}
-
 
             function createDifferenceBarChart(year) {
                 const indicators = ["Total water use with utilities", "Total water consumption"];
@@ -562,10 +583,12 @@
                         y: {
                             field: "Difference",
                             type: "quantitative",
-                            title: "Total Water Returned to Earth (ML)",
+                            title: "Water Returned to Environment (ML)",
                             axis: {
                                 labelFontSize: 12,
                                 titleFontSize: 14,
+                                labelFont: "Roboto",
+                                titleFont: "Roboto",
                                 grid: false // Remove horizontal grid lines
                             }
                         },
@@ -580,13 +603,15 @@
                         },
                         tooltip: [
                             { field: "State", type: "nominal", title: "State" },
-                            { field: "Difference", type: "quantitative", title: "Total Water Returned to Earth (ML)", format: "," }
+                            { field: "Difference", type: "quantitative", title: "Water Returned to Environment (ML)", format: "," }
                         ]
                     },
                     config: {
                         axis: {
                             labelFontSize: 12,
-                            titleFontSize: 14
+                            titleFontSize: 14,
+                            labelFont: "Roboto",
+                            titleFont: "Roboto"
                         }
                     }
                 };
@@ -596,7 +621,7 @@
 
             function updateBarChartTitle(year) {
                 const barChartTitle = document.getElementById('barChartTitle');
-                barChartTitle.textContent = `Total Water Returned to Earth for ${year}`;
+                barChartTitle.textContent = `Water Returned to Environment by Region (${year})`;
             }
 
             function init() {
@@ -688,6 +713,20 @@
                                     {field: "properties.name", type: "nominal", title: "State"},
                                     {field: "Value", type: "quantitative", title: getTooltipTitle(selectedCategory), format: ","}
                                 ]
+                            },
+                            config: {
+                                axis: {
+                                    labelFontSize: 12,
+                                    titleFontSize: 14,
+                                    labelFont: "Roboto",
+                                    titleFont: "Roboto"
+                                },
+                                legend: {
+                                    labelFontSize: 12,
+                                    titleFontSize: 14,
+                                    labelFont: "Roboto",
+                                    titleFont: "Roboto"
+                                }
                             }
                         },
                         {
@@ -784,7 +823,13 @@
                         ],
                         config: {
                             view: { stroke: null },
-                            axis: { grid: false, labels: false, ticks: false, domain: false }
+                            axis: { grid: false, labels: false, ticks: false, domain: false },
+                            legend: {
+                                labelFontSize: 12,
+                                titleFontSize: 14,
+                                labelFont: "Roboto",
+                                titleFont: "Roboto"
+                            }
                         }
                     };
 
@@ -920,7 +965,21 @@
                                 color: {value: "black"}
                             }
                         }
-                    ]
+                    ],
+                    config: {
+                        axis: {
+                            labelFontSize: 12,
+                            titleFontSize: 14,
+                            labelFont: "Roboto",
+                            titleFont: "Roboto"
+                        },
+                        legend: {
+                            labelFontSize: 12,
+                            titleFontSize: 14,
+                            labelFont: "Roboto",
+                            titleFont: "Roboto"
+                        }
+                    }
                 };
 
                 vegaEmbed('#isotypechart', vlSpec, {actions: false}).catch(console.error);
@@ -933,7 +992,7 @@
                     : yearData.filter(d => d.Region.toLowerCase() === 'australia');
 
                 summaryData = {
-                    totalConsumption: relevantData.find(d => d.Indicator.toLowerCase() === "total water consumption")?.Value || 0,
+                    totalConsumption: relevantData.find(d => d.Indicator.toLowerCase() === "total water use with utilities")?.Value || 0,
                     industryUse: relevantData.find(d => d.Indicator.toLowerCase() === "total water use by industry without utilities")?.Value || 0,
                     utilitiesUse: relevantData.find(d => d.Indicator.toLowerCase() === "utilities")?.Value || 0, // Corrected
                     householdUse: relevantData.find(d => d.Indicator.toLowerCase() === "total water use by households")?.Value || 0
@@ -971,7 +1030,6 @@
                     summaryCardsContainer.appendChild(card);
                 });
             }
-
 
             function handleYearChange(event) {
                 const year = parseInt(event.target.value);
@@ -1012,11 +1070,11 @@
                     case "total water use with utilities":
                         return `Total Water Use in ${region}`;
                     case "total water use by industry without utilities":
-                        return `Total Industry Use in ${region}`;
+                        return `Industry Water Use in ${region}`;
                     case "utilities":
-                        return `Utilities Use in ${region}`;
+                        return `Utilities Water Use in ${region}`;
                     case "total water use by households":
-                        return `Household Use of Water in ${region}`;
+                        return `Household Water Use in ${region}`;
                     default:
                         return `Water Usage in ${region}`;
                 }
@@ -1025,13 +1083,13 @@
             function getDynamicParagraph() {
                 switch(selectedCategory.toLowerCase()) {
                     case "total water use with utilities":
-                        return "Analyzing the total water use across different regions to understand overall consumption.";
+                        return "Explore how different sectors contribute to the overall water usage in Australia, and analyze which regions have the highest total water use. Does a larger population mean more water consumption?";
                     case "total water use by industry without utilities":
-                        return "Examining industrial water consumption to assess direct industry usage.";
+                        return "Dive into industrial water consumption to understand how industries impact water usage across regions. See which industries use the most water.";
                     case "utilities":
-                        return "Investigating water usage by utilities to understand their impact on total consumption.";
+                        return "Investigate the role of utilities in water usage and how it correlates with population and infrastructure. Utilities play a key role in managing water resources.";
                     case "total water use by households":
-                        return "Exploring residential water consumption patterns to promote awareness and encourage water-saving habits.";
+                        return "Examine residential water consumption patterns to see if larger populations correspond to higher household water use. How does household water usage vary across regions?";
                     default:
                         return "Visualizing water usage data to gain insights into consumption patterns and promote sustainable practices.";
                 }
@@ -1044,94 +1102,6 @@
 
             // Initialize the application when the DOM is fully loaded
             document.addEventListener("DOMContentLoaded", init);
-
-            function createDifferenceBarChart(year) {
-                const indicators = ["Total water use with utilities", "Total water consumption"];
-                const filteredData = waterData.filter(d => 
-                    d.Year === year && 
-                    indicators.includes(d.Indicator) &&
-                    Object.keys(stateColors).includes(d.Region)
-                );
-
-                // Transform data to calculate difference per state
-                const transformedData = {};
-                filteredData.forEach(d => {
-                    if (!transformedData[d.Region]) {
-                        transformedData[d.Region] = { State: d.Region };
-                    }
-                    if (d.Indicator === "Total water use with utilities") {
-                        transformedData[d.Region].Utilities = d.Value;
-                    }
-                    if (d.Indicator === "Total water consumption") {
-                        transformedData[d.Region].Consumption = d.Value;
-                    }
-                });
-
-                // Calculate difference and prepare final data
-                const finalData = [];
-                Object.values(transformedData).forEach(d => {
-                    if (d.Utilities != null && d.Consumption != null) {
-                        finalData.push({
-                            State: d.State,
-                            Difference: d.Utilities - d.Consumption
-                        });
-                    }
-                });
-
-                // Bar Chart Specification with Improved Design
-                const barChartSpec = {
-                    $schema: "https://vega.github.io/schema/vega-lite/v5.json",
-                    width: "container",
-                    height: 300,
-                    data: { values: finalData },
-                    mark: "bar",
-                    encoding: {
-                        x: {
-                            field: "State",
-                            type: "nominal",
-                            title: null, // Removed x-axis title
-                            sort: Object.keys(stateColors), // Ensure consistent order
-                            axis: {
-                                labels: false, // Remove x-axis labels
-                                ticks: false, // Remove x-axis ticks
-                                domain: false // Remove x-axis domain line
-                            }
-                        },
-                        y: {
-                            field: "Difference",
-                            type: "quantitative",
-                            title: "Total Water Returned to Earth (ML)",
-                            axis: {
-                                labelFontSize: 12,
-                                titleFontSize: 14,
-                                grid: false // Remove horizontal grid lines
-                            }
-                        },
-                        color: {
-                            field: "State",
-                            type: "nominal",
-                            scale: {
-                                domain: Object.keys(stateColors),
-                                range: Object.values(stateColors)
-                            },
-                            legend: null // Removed Vega-Lite legend
-                        },
-                        tooltip: [
-                            { field: "State", type: "nominal", title: "State" },
-                            { field: "Difference", type: "quantitative", title: "Total Water Returned to Earth (ML)", format: "," }
-                        ]
-                    },
-                    config: {
-                        axis: {
-                            labelFontSize: 12,
-                            titleFontSize: 14
-                        }
-                    }
-                };
-
-                // Embed the bar chart
-                vegaEmbed('#efficiencyBarChart', barChartSpec, {actions: false}).catch(console.error);
-            }
 
             function createHeatmap(selectedIndicator = 'Area-average rainfall ') {
                 const heatmapSpec = {
@@ -1181,18 +1151,28 @@
                       "type": "ordinal",
                       "title": "Year",
                       "axis": {
-                        "labelAngle": 0
+                        "labelAngle": 0,
+                        "labelFontSize": 12,
+                        "titleFontSize": 14,
+                        "labelFont": "Roboto",
+                        "titleFont": "Roboto"
                       }
                     },
                     "y": {
                       "field": "RegionAlias",
                       "type": "nominal",
-                      "title": "Region"
+                      "title": "Region",
+                      "axis": {
+                        "labelFontSize": 12,
+                        "titleFontSize": 14,
+                        "labelFont": "Roboto",
+                        "titleFont": "Roboto"
+                      }
                     },
                     "color": {
                       "field": "Value",
                       "type": "quantitative",
-                      "title": "Water Usage (ML)",
+                      "title": "Value",
                       "scale": {
                         "scheme": "blues"
                       },
@@ -1201,7 +1181,9 @@
                         "direction": "horizontal",
                         "gradientLength": 1000,
                         "titleFontSize": 14,
-                        "labelFontSize": 12
+                        "labelFontSize": 12,
+                        "labelFont": "Roboto",
+                        "titleFont": "Roboto"
                       }
                     },
                     "tooltip": [
@@ -1228,11 +1210,15 @@
                   "config": {
                     "axis": {
                       "labelFontSize": 12,
-                      "titleFontSize": 14
+                      "titleFontSize": 14,
+                      "labelFont": "Roboto",
+                      "titleFont": "Roboto"
                     },
                     "legend": {
                       "labelFontSize": 12,
                       "titleFontSize": 14,
+                      "labelFont": "Roboto",
+                      "titleFont": "Roboto"
                     }
                   }
                 };
@@ -1256,125 +1242,151 @@
                 createHeatmap(indicator);
             }
 
-            // Initialize the application when the DOM is fully loaded
-            document.addEventListener("DOMContentLoaded", init);
-
             // Function to create the Water Extraction and Return Flow Chart
             function createWaterExtractionChart() {
     const waterExtractionSpec = {
-      "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
-      "description": "Water use data pyramid converted from Gigalitres (GL) to Megalitres (ML).",
-      "data": {
-        "url": "https://raw.githubusercontent.com/Lhart0050/population-density-map/refs/heads/Assignment/Water_Use_Data_in_Long_Format.csv",
-        "format": { "type": "csv" }
-      },
-      "autosize": {
-          "type": "fit",
-          "contains": "padding"
-      },
-      "hconcat": [
-        {
-          "width": 450,  // Adjusted width for the first chart
-          "height": 300, // Adjusted height
-          "transform": [
-            { "filter": "datum['Flow Type'] == 'Self-extracted (GL)'" },
-            { "calculate": "-datum['Value (GL)'] / 1000", "as": "NegValue_ML" }
-          ],
-          "title": "Self-extracted (ML)",
-          "mark": {"type": "bar", "tooltip": true},
-          "encoding": {
-            "y": {
-              "field": "Source",
-              "type": "ordinal",
-              "axis": null,
-              "sort": "descending"
-            },
-            "x": {
-              "aggregate": "sum",
-              "field": "NegValue_ML",
-              "type": "quantitative",
-              "axis": { "format": ".3s", "title": "Value (ML)", "titlePadding": 10 }
-            },
-            "color": {
-              "field": "Flow Type",
-              "legend": null,
-              "scale": { "range": ["#084a90"] }
-            },
-            "text": {
-              "aggregate": "sum",
-              "field": "NegValue_ML",
-              "type": "quantitative",
-              "format": ".3s"
-            }
-          }
+        "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+        "description": "Water use data pyramid converted from Gigalitres (GL) to Megalitres (ML).",
+        "data": {
+            "url": "https://raw.githubusercontent.com/Lhart0050/population-density-map/refs/heads/Assignment/water-return-flow.csv",
+            "format": { "type": "csv" }
         },
-        {
-          "width": 100, // Fixed width for the Source labels
-          "height": 300,
-          "view": { "stroke": null },
-          "mark": {
-            "type": "text",
-            "align": "center"
-          },
-          "encoding": {
-            "y": {
-              "field": "Source",
-              "type": "ordinal",
-              "axis": null,
-              "sort": "descending"
-            },
-            "text": { "field": "Source", "type": "nominal" }
-          }
+        "autosize": {
+            "type": "fit",
+            "contains": "padding"
         },
-        {
-          "width":450,
-          "height":300,
-          "transform": [
-            { "filter": "datum['Flow Type'] == 'Return flows (GL)'" },
-            { "calculate": "datum['Value (GL)'] / 1000", "as": "Value_ML" }
-          ],
-          "title": "Return flows (ML)",
-          "mark": {"type": "bar", "tooltip": true},
-          "encoding": {
-            "y": {
-              "field": "Source",
-              "type": "ordinal",
-              "axis": null,
-              "sort": "descending"
+        "hconcat": [
+            {
+                "width": 450,
+                "height": 300,
+                "transform": [
+                    { "filter": "datum['Flow Type'] == 'Self-extracted (GL)'" },
+                    { "calculate": "datum['Value (GL)'] / 1000", "as": "Value_ML" }  // Use positive value
+                ],
+                "title": "Self-extracted (ML)",
+                "mark": { "type": "bar", "tooltip": true },
+                "encoding": {
+                    "y": {
+                        "field": "Source",
+                        "type": "ordinal",
+                        "axis": null,
+                        "sort": "descending",
+                        "title": null
+                    },
+                    "x": {
+                        "aggregate": "sum",
+                        "field": "Value_ML",
+                        "type": "quantitative",
+                        "scale": { "reverse": true },  // Reverse the x-axis scale
+                        "axis": {
+                            "format": ".3s",
+                            "title": "Value (ML)",
+                            "titlePadding": 10,
+                            "labelFontSize": 12,
+                            "titleFontSize": 14,
+                            "labelFont": "Roboto",
+                            "titleFont": "Roboto"
+                        }
+                    },
+                    "color": {
+                        "field": "Flow Type",
+                        "legend": null,
+                        "scale": { "range": ["#084a90"] }
+                    },
+                    "text": {
+                        "aggregate": "sum",
+                        "field": "Value_ML",  // Use positive value for text
+                        "type": "quantitative",
+                        "format": ".3s"
+                    },
+                    "tooltip": [
+                        { "field": "Source", "type": "nominal", "title": "Source" },
+                        { "field": "Value_ML", "type": "quantitative", "title": "Value (ML)", "format": ",.2f" }  // Use positive value for tooltip
+                    ]
+                }
             },
-            "x": {
-              "aggregate": "sum",
-              "field": "Value_ML",
-              "type": "quantitative",
-              "axis": { "format": ".3s", "title": "Value (ML)", "titlePadding": 10 }
+            {
+                "width": 100,
+                "height": 300,
+                "view": { "stroke": null },
+                "mark": {
+                    "type": "text",
+                    "align": "center",
+                    "baseline": "middle"
+                },
+                "encoding": {
+                    "y": {
+                        "field": "Source",
+                        "type": "ordinal",
+                        "axis": null,
+                        "sort": "descending"
+                    },
+                    "text": { "field": "Source", "type": "nominal" }
+                }
             },
-            "color": {
-              "field": "Flow Type",
-              "legend": null,
-              "scale": { "range": ["#3c8ac2"] }
-            },
-            "text": {
-              "aggregate": "sum",
-              "field": "Value_ML",
-              "type": "quantitative",
-              "format": ".3s"
+            {
+                "width": 450,
+                "height": 300,
+                "transform": [
+                    { "filter": "datum['Flow Type'] == 'Return flows (GL)'" },
+                    { "calculate": "datum['Value (GL)'] / 1000", "as": "Value_ML" }
+                ],
+                "title": "Return Flows (ML)",
+                "mark": { "type": "bar", "tooltip": true },
+                "encoding": {
+                    "y": {
+                        "field": "Source",
+                        "type": "ordinal",
+                        "axis": null,
+                        "sort": "descending",
+                        "title": null
+                    },
+                    "x": {
+                        "aggregate": "sum",
+                        "field": "Value_ML",
+                        "type": "quantitative",
+                        "axis": {
+                            "format": ".3s",
+                            "title": "Value (ML)",
+                            "titlePadding": 10,
+                            "labelFontSize": 12,
+                            "titleFontSize": 14,
+                            "labelFont": "Roboto",
+                            "titleFont": "Roboto"
+                        }
+                    },
+                    "color": {
+                        "field": "Flow Type",
+                        "legend": null,
+                        "scale": { "range": ["#3c8ac2"] }
+                    },
+                    "text": {
+                        "aggregate": "sum",
+                        "field": "Value_ML",
+                        "type": "quantitative",
+                        "format": ".3s"
+                    },
+                    "tooltip": [
+                        { "field": "Source", "type": "nominal", "title": "Source" },
+                        { "field": "Value_ML", "type": "quantitative", "title": "Value (ML)", "format": ",.2f" }
+                    ]
+                }
             }
-          }
+        ],
+        "config": {
+            "view": { "stroke": null },
+            "axis": { "grid": false },
+            "style": {
+                "guide-title": { "fontSize": 14, "font": "Roboto" },
+                "guide-label": { "fontSize": 12, "font": "Roboto" },
+                "title": { "fontSize": 16, "font": "Roboto", "fontWeight": "bold" }
+            }
         }
-      ],
-      "config": {
-        "view": { "stroke": null },
-        "axis": { "grid": false },
-        "style": {
-          "guide-title": {"fontSize": 14, "font": "Arial"},
-          "guide-label": {"fontSize": 12, "font": "Arial"},
-          "title": {"fontSize": 16, "font": "Arial", "fontWeight": "bold"}
-        }
-      }
     };
 
-    vegaEmbed('#waterExtractionChart', waterExtractionSpec, {actions: false}).catch(console.error);
+    vegaEmbed('#waterExtractionChart', waterExtractionSpec, { actions: false }).catch(console.error);
 }
+
         </script>
     </div>
 </body>
